@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "742497530729",
+    "firebase_url": "https://sports-8c094-default-rtdb.firebaseio.com",
+    "project_id": "sports-8c094",
+    "storage_bucket": "sports-8c094.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742497530729:android:9a40d95d61bb91330d43f8",
+        "android_client_info": {
+          "package_name": "com.loic.sports"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742497530729-imhohh52mkj4k72rbkm1el5sbog2v2n7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqRG1PAEEqmEpxHz2yNhUfSdoZIHJwVnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742497530729-imhohh52mkj4k72rbkm1el5sbog2v2n7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
