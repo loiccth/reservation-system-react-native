@@ -10,7 +10,11 @@ import {
 } from 'react-native'
 import background from '../assets/background.png'
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = ({ route, navigation }) => {
+
+    const { complex } = route.params
+    console.log(complex)
+
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='cover' style={styles.image}>

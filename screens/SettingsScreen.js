@@ -3,59 +3,70 @@ import { StyleSheet, Text, View, Button, Platform, StatusBar, Image, TouchableOp
 import { getAuth, signOut } from 'firebase/auth'
 import illustration from '../assets/undraw_set_preferences_kwia.png'
 import { UserContext } from '../contexts/UserContext'
+import { Ionicons } from '@expo/vector-icons'
+import { Card } from 'react-native-paper'
 
 const SettingsScreen = ({ navigation }) => {
     const auth = getAuth()
     const user = React.useContext(UserContext)
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}>
-            <Image source={illustration} style={styles.illustration} />
+        <ScrollView style={styles.container}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                <Image source={illustration} style={styles.illustration} />
+                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>Settings</Text>
+            </View>
 
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Settings</Text>
+            <View style={styles.settingTabs}>
+                <Card style={styles.tabContainer} elevation={10}>
+                    <TouchableOpacity style={styles.test}>
+                        <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
+                            <Text style={{ fontSize: 16, fontWeight: '700' }}>Account</Text>
+                        </View>
+                        <View style={{ flex: 1, alignSelf: 'flex-end', alignItems: 'flex-end', padding: 5 }}>
+                            <Ionicons name='arrow-forward-circle-outline' size={30} style={{ color: '#00ADB5' }} />
+                        </View>
+                    </TouchableOpacity>
+                </Card>
+                <Card style={styles.tabContainer} elevation={10}>
+                    <TouchableOpacity style={styles.test}>
+                        <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
+                            <Text style={{ fontSize: 16, fontWeight: '700' }}>Membership</Text>
+                        </View>
+                        <View style={{ flex: 1, alignSelf: 'flex-end', alignItems: 'flex-end', padding: 5 }}>
+                            <Ionicons name='arrow-forward-circle-outline' size={30} style={{ color: '#00ADB5' }} />
+                        </View>
+                    </TouchableOpacity>
+                </Card>
+                <Card style={styles.tabContainer} elevation={10}>
+                    <TouchableOpacity style={styles.test}>
+                        <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
+                            <Text style={{ fontSize: 16, fontWeight: '700' }}>About Us</Text>
+                        </View>
+                        <View style={{ flex: 1, alignSelf: 'flex-end', alignItems: 'flex-end', padding: 5 }}>
+                            <Ionicons name='arrow-forward-circle-outline' size={30} style={{ color: '#00ADB5' }} />
+                        </View>
+                    </TouchableOpacity>
+                </Card>
+                <Card style={styles.tabContainer} elevation={10}>
+                    <TouchableOpacity style={styles.test}>
+                        <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
+                            <Text style={{ fontSize: 16, fontWeight: '700' }}>Terms and Conditions</Text>
+                        </View>
+                        <View style={{ flex: 1, alignSelf: 'flex-end', alignItems: 'flex-end', padding: 5 }}>
+                            <Ionicons name='arrow-forward-circle-outline' size={30} style={{ color: '#00ADB5' }} />
+                        </View>
+                    </TouchableOpacity>
+                </Card>
+            </View>
 
-            <View width={'94%'}>
-                <Text style={styles.label}>Firstname</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 30 }}>
+                <TouchableOpacity
+                    onPress={() => signOut(auth)}
+                    style={{ ...styles.btn, width: 160, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
+                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Logout</Text>
+                </TouchableOpacity>
             </View>
-            <TextInput style={styles.inputText}
-                placeholderTextColor='#c4cfce'
-                value={user.firstname}
-                editable={false}
-            />
-            <View width={'94%'}>
-                <Text style={styles.label}>Lastname</Text>
-            </View>
-            <TextInput style={styles.inputText}
-                placeholderTextColor='#c4cfce'
-                value={user.lastname}
-                editable={false}
-            />
-            <View width={'94%'}>
-                <Text style={styles.label}>Email</Text>
-            </View>
-            <TextInput style={styles.inputText}
-                placeholderTextColor='#c4cfce'
-                value={user.email}
-                editable={false}
-            />
-            <View width={'94%'}>
-                <Text style={styles.label}>Role</Text>
-            </View>
-            <TextInput style={styles.inputText}
-                placeholderTextColor='#c4cfce'
-                value={user.role}
-                editable={false}
-            />
-
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Add')}>
-                <Text style={styles.buttonTxt}>Add new complex</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ ...styles.button, backgroundColor: 'red', marginBottom: 25 }} onPress={() => signOut(auth)}>
-                <Text style={styles.buttonTxt}>Logout</Text>
-            </TouchableOpacity>
         </ScrollView>
     )
 }
@@ -73,31 +84,26 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
     },
-    label: {
-        alignSelf: 'flex-start',
-        color: '#333',
-        fontWeight: 'bold'
-    },
-    inputText: {
-        margin: 10,
+    btn: {
+        fontSize: 18,
+        margin: 3,
+        padding: 8,
+        paddingRight: 12,
+        paddingHorizontal: 15,
         borderWidth: 1,
-        borderRadius: 10,
-        borderColor: '#aeb0af',
-        padding: 10,
-        width: '94%',
-        color: '#333'
+        borderColor: '#393E46',
+        color: '#393E46',
+        borderRadius: 50
     },
-    button: {
-        backgroundColor: '#6C63FF',
-        padding: 15,
-        width: '94%',
-        alignItems: 'center',
-        borderRadius: 10,
-        margin: 5
+    settingTabs: {
+
     },
-    buttonTxt: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: '#fff'
+    tabContainer: {
+        backgroundColor: 'white',
+        margin: 10,
+        marginBottom: 5
+    },
+    test: {
+        flexDirection: 'row',
     }
 })

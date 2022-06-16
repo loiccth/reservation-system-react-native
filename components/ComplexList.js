@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ComplexCard from './ComplexCard'
 
-const ComplexList = ({ complexes }) => {
+const ComplexList = ({ complexes, navigation }) => {
     return (
         <View>
             {complexes.length === 0 &&
@@ -14,7 +14,7 @@ const ComplexList = ({ complexes }) => {
             }
 
             {complexes.map((complex, index) =>
-                <ComplexCard key={index} complex={complex} />
+                <ComplexCard key={index} complex={complex} navigation={navigation} />
             )}
         </View>
     )

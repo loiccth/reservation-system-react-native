@@ -14,7 +14,7 @@ import ComplexList from '../components/ComplexList'
 import FilterComplex from '../components/FilterComplex'
 import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore'
 
-const SportsListScreen = () => {
+const SportsListScreen = ({ navigation }) => {
      const [complexes, setComplexes] = useState([])
      const [filters, setFilters] = useState([])
      const [currentFilter, setCurrentFilter] = useState('All')
@@ -104,7 +104,7 @@ const SportsListScreen = () => {
                          <FilterComplex filters={filters} currentFilter={currentFilter} handleFilterChange={handleFilterChange} />
                     </View>
                     <View>
-                         <ComplexList complexes={complexes} />
+                         <ComplexList complexes={complexes} navigation={navigation} />
                     </View>
                </ScrollView>
                <ExpoStatusBar />

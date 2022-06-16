@@ -12,6 +12,8 @@
   "dependencies": {
     "@expo-google-fonts/lato": "^0.2.2",
     "@expo-google-fonts/oswald": "^0.2.2",
+    "@react-native-community/datetimepicker": "3.5.2",
+    "@react-native-community/slider": "4.1.12",
     "@react-native-masked-view/masked-view": "0.2.5",
     "@react-native-picker/picker": "^2.3.1",
     "@react-navigation/bottom-tabs": "^6.2.0",
@@ -21,6 +23,7 @@
     "expo": "~43.0.2",
     "expo-app-loading": "~1.2.1",
     "expo-blur": "^11.0.0",
+    "expo-dev-client": "~0.6.3",
     "expo-file-system": "^13.1.4",
     "expo-font": "~10.0.3",
     "expo-image-picker": "^12.0.2",
@@ -38,12 +41,14 @@
     "react-native-maps": "^0.30.1",
     "react-native-maps-directions": "^1.8.0",
     "react-native-paper": "^4.11.2",
+    "react-native-qrcode-svg": "^6.1.2",
     "react-native-reanimated": "~2.2.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screen": "^1.0.1",
     "react-native-web": "0.17.1",
     "uuid": "^8.3.2",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "react-native-svg": "12.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
