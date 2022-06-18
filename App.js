@@ -1,7 +1,7 @@
 import React from 'react'
 import { initializeApp } from 'firebase/app'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getFirestore, doc, getDoc, deleteDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { useFonts, Oswald_400Regular } from '@expo-google-fonts/oswald'
 import { Lato_900Black, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import AppLoading from 'expo-app-loading'
@@ -49,19 +49,27 @@ export default function App() {
         Oswald_400Regular,
     })
 
-    React.useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user)
+    const checkMFA = (date) => {
+        const today = new Date()
+        today.setMinutes(today.getMinutes + 3)
 
-                getDoc(doc(db, 'users', user.uid))
+
+    }
+
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (user1) => {
+            if (user1) {
+                // setUser(user)
+
+                getDoc(doc(db, 'users', user1.uid))
                     .then(res => {
                         if (res.exists()) {
                             setUser({
-                                uid: user.uid,
+                                uid: user1.uid,
                                 ...res.data()
                             })
-                            getDoc(doc(db, 'memberships', user.uid))
+
+                            getDoc(doc(db, 'memberships', user1.uid))
                                 .then(resMem => {
                                     if (resMem.exists()) {
                                         if (!isInThePast(new Date(resMem.data().endDate))) {
@@ -75,7 +83,7 @@ export default function App() {
                                                     endDate: newEndDate
                                                 })
 
-                                                updateDoc(doc(db, 'memberships', user.uid), {
+                                                updateDoc(doc(db, 'memberships', user1.uid), {
                                                     endDate: newEndDate
                                                 })
 
@@ -84,7 +92,7 @@ export default function App() {
                                             }
                                             else {
                                                 setMembership()
-                                                deleteDoc(doc(db, 'memberships', user.uid))
+                                                deleteDoc(doc(db, 'memberships', user1.uid))
                                             }
                                         }
                                     }
@@ -134,5 +142,5 @@ export default function App() {
             .catch(error => console.log(error))
     }, [])
 
-    return loading ? <AppLoading /> : user ? <UserContext.Provider value={{ user, setUser, membership, setMembership }}><MFAStack /></UserContext.Provider> : <AuthStack />
+    return loading ? <AppLoading /> : user ? <UserContext.Provider value={{ user, setUser, membership, setMembership }}><MFAStack showMFA={user.mfa} /></UserContext.Provider> : <AuthStack />
 }

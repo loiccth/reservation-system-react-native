@@ -7,10 +7,10 @@ import AppNavigator from './AppNavigator'
 
 const Stack = createStackNavigator()
 
-export default function MFAStack() {
+export default function MFAStack({ showMFA }) {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName='MFA'
+            <Stack.Navigator initialRouteName={showMFA ? 'MFA' : 'App'}
                 screenOptions={{
                     headerShown: false
                 }}

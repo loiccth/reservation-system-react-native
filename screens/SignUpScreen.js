@@ -46,7 +46,9 @@ const SignUpScreen = ({ navigation }) => {
                             email: cred.user.email,
                             firstname: data.firstname,
                             lastname: data.lastname,
-                            role: 'admin'
+                            role: 'user',
+                            lastlogin: new Date().toISOString(),
+                            mfa: true
                         })
                     })
                     .catch(err => {

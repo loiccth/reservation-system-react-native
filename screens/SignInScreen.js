@@ -13,6 +13,7 @@ import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 import * as yup from 'yup'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import illustration from '../assets/undraw_Authentication_re_svpt.png'
+import { getFirestore, doc, updateDoc } from 'firebase/firestore'
 
 let schema = yup.object().shape({
     password: yup.string().required('Password field is required.'),
@@ -25,7 +26,7 @@ const SignInScreen = ({ navigation }) => {
         password: '',
         error: ''
     })
-
+    const db = getFirestore()
     const auth = getAuth()
 
     const handleSignIn = () => {
@@ -35,6 +36,12 @@ const SignInScreen = ({ navigation }) => {
         })
             .then(() => {
                 signInWithEmailAndPassword(auth, data.email, data.password)
+                    .then(() => {
+                        updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                            lastlogin: new Date().toISOString(),
+                            mfa: true
+                        })
+                    })
                     .catch(err => {
                         setData({ ...data, error: err.message, password: '' })
                     })

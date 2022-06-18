@@ -7,7 +7,7 @@ import { UserContext } from '../contexts/UserContext'
 import isInThePast from '../utils/pastCheck'
 
 const MFAScreen = ({ navigation }) => {
-    const user = React.useContext(UserContext).user
+    const { user, setUser } = React.useContext(UserContext)
     const db = getFirestore()
     const [disable, setDisable] = React.useState(true)
     const [code, setCode] = React.useState()
@@ -29,6 +29,13 @@ const MFAScreen = ({ navigation }) => {
                     }
                     else {
                         deleteDoc(doc(db, 'mfa', user.email))
+                        updateDoc(doc(db, 'users', user.uid), {
+                            mfa: false
+                        })
+                        setUser({
+                            ...user,
+                            mfa: false
+                        })
                         navigation.navigate('App')
                     }
                 }
