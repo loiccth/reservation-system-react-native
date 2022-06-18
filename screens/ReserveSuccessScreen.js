@@ -24,7 +24,7 @@ const ReserveSuccessScreen = ({ route, navigation }) => {
             })
             .then(result => {
                 console.log(`reservation saved (vip) => ${result._key.path.segments[1]}`)
-                axios.post('http://192.168.100.50:8080/api/v1/reservation',
+                axios.post('http://192.168.100.50:8080/api/v1/payment/reservation',
                     {
                         complex,
                         reservationDetails,

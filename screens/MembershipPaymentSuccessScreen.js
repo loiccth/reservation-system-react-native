@@ -12,7 +12,7 @@ const MembershipPaymentSuccessScreen = ({ route, navigation }) => {
     const db = getFirestore()
 
     React.useEffect(() => {
-        axios.post('http://192.168.100.50:8080/api/v1/membership', { id: user.uid, price, phone: user.phone, email: user.email })
+        axios.post('http://192.168.100.50:8080/api/v1/payment/membership', { id: user.uid, price, phone: user.phone, email: user.email })
             .then(() => {
                 setDoc(doc(db, 'memberships', user.uid), {
                     type,

@@ -6,6 +6,7 @@ import { useFonts, Oswald_400Regular } from '@expo-google-fonts/oswald'
 import { Lato_900Black, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import AppLoading from 'expo-app-loading'
 import AppNavigator from './navigation/AppNavigator'
+import MFAStack from './navigation/MFAStack'
 import AuthStack from './navigation/AuthStack'
 import { LogBox } from 'react-native'
 import { UserContext } from './contexts/UserContext'
@@ -133,5 +134,5 @@ export default function App() {
             .catch(error => console.log(error))
     }, [])
 
-    return loading ? <AppLoading /> : user ? <UserContext.Provider value={{ user, setUser, membership, setMembership }}><AppNavigator /></UserContext.Provider> : <AuthStack />
+    return loading ? <AppLoading /> : user ? <UserContext.Provider value={{ user, setUser, membership, setMembership }}><MFAStack /></UserContext.Provider> : <AuthStack />
 }

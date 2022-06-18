@@ -11,7 +11,7 @@ const PaymentSuccessScreen = ({ route, navigation }) => {
     const db = getFirestore()
 
     React.useEffect(() => {
-        axios.post('http://192.168.100.50:8080/api/v1/reservation',
+        axios.post('http://192.168.100.50:8080/api/v1/payment/reservation',
             {
                 complex,
                 reservationDetails,

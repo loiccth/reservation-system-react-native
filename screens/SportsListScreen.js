@@ -44,6 +44,11 @@ const SportsListScreen = ({ navigation }) => {
                })
 
           setComplexes(temp)
+
+          navigation.addListener('beforeRemove', e => {
+               e.preventDefault()
+               navigation.navigate('App')
+          })
      }, [])
 
      useFocusEffect(
