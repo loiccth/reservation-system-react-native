@@ -13,7 +13,7 @@ import ReservationsStack from './ReservationsStack'
 const Tab = createBottomTabNavigator()
 
 const AppNavigator = () => {
-    const user = React.useContext(UserContext)
+    const user = React.useContext(UserContext).user
 
     return (
         <NavigationContainer>

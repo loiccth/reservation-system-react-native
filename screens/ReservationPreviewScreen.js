@@ -1,10 +1,23 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Button, ScrollView } from 'react-native'
 import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore'
+import { UserContext } from '../contexts/UserContext'
 
 const ReservationPreviewScreen = ({ route, navigation }) => {
-    const { complex, reservationDetails, price } = route.params
+    const { membership } = React.useContext(UserContext)
+    const { complex, reservationDetails, price, discount } = route.params
     const db = getFirestore()
+
+    const handleOnPress = () => {
+        if (membership) {
+            if (membership.type === 'VIP') {
+                navigation.navigate('ReserveSuccess', { complex, reservationDetails, price, discount })
+            }
+        }
+        else {
+            navigation.navigate('Payment', { add: true, complex, reservationDetails, price, discount })
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -25,6 +38,12 @@ const ReservationPreviewScreen = ({ route, navigation }) => {
                         <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Kid Price</Text></View>
                         <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>No. of adults</Text></View>
                         <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>No. of kids</Text></View>
+                        {membership &&
+                            <>
+                                <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Gross price</Text></View>
+                                <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Membership discount</Text></View>
+                            </>
+                        }
                         <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Total price</Text></View>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -38,13 +57,19 @@ const ReservationPreviewScreen = ({ route, navigation }) => {
                         <View style={{ marginVertical: 10 }}><Text>Rs {reservationDetails.packageDetails.kidPrice}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.people.adult}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.people.children}</Text></View>
+                        {membership &&
+                            <>
+                                <View style={{ marginVertical: 10 }}><Text >Rs {price + discount}</Text></View>
+                                <View style={{ marginVertical: 10 }}><Text >Rs {discount}</Text></View>
+                            </>
+                        }
                         <View style={{ marginVertical: 10 }}><Text>Rs {price}</Text></View>
                     </View>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Payment', { add: true, complex, reservationDetails, price })}
+                        onPress={handleOnPress}
                         style={{ ...styles.price, backgroundColor: price === 0 ? '#8f8f8f' : '#00ADB5', borderColor: price === 0 ? '#8f8f8f' : '#00ADB5' }}>
                         <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Confirm reservation</Text>
                     </TouchableOpacity>

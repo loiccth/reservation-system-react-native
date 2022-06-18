@@ -10,7 +10,7 @@ const ViewReservationDetailsScreen = ({ route, navigation }) => {
     const db = getFirestore()
 
     const handleCancel = () => {
-        console.log('cancel func')
+        console.log(`cancel reservation => ${reservationDetails.id}`)
         updateDoc(doc(db, 'reservations', reservationDetails.id), {
             status: 'CA',
             cancelDate: new Date().toISOString()

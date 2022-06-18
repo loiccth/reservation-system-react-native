@@ -1,34 +1,44 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ScrollView } from 'react-native'
 import { getFirestore, collection, getDocs, query, where, doc, getDoc, updateDoc } from 'firebase/firestore'
-import illustration from '../assets/undraw_Order_confirmed_re_g0if.png'
+import illustration from '../assets/undraw_Booking_re_gw4j.png'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 
-const PaymentSuccessScreen = ({ route, navigation }) => {
+const ReserveSuccessScreen = ({ route, navigation }) => {
     const user = React.useContext(UserContext).user
-    const { complex, reservationDetails, reservationId, price, discount } = route.params
+    const { complex, reservationDetails, price, discount } = route.params
     const db = getFirestore()
 
     React.useEffect(() => {
-        axios.post('http://192.168.100.50:8080/api/v1/reservation',
+        addDoc(collection(db, 'reservations'),
             {
-                complex,
-                reservationDetails,
-                price,
-                discount,
-                phone: user.phone,
-                email: user.email
+                ...reservationDetails,
+                paid: true,
+                paymentDetails: {
+                    date: new Date().toISOString()
+                },
+                user: user.email,
+                status: 'A',
+                complex
             })
-            .then(() => {
-                updateDoc(doc(db, 'reservations', reservationId), {
-                    paid: true,
-                    paymentDetails: {
-                        date: new Date().toISOString()
-                    }
-                })
+            .then(result => {
+                console.log(`reservation saved (vip) => ${result._key.path.segments[1]}`)
+                axios.post('http://192.168.100.50:8080/api/v1/reservation',
+                    {
+                        complex,
+                        reservationDetails,
+                        price,
+                        discount,
+                        phone: user.phone,
+                        email: user.email
+                    })
+                    .catch(err => console.log(err))
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                // ToastAndroid.show(err.message + '', ToastAndroid.SHORT)
+            })
 
         const unsubscribe = navigation.addListener('beforeRemove', e => {
             e.preventDefault()
@@ -118,4 +128,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PaymentSuccessScreen
+export default ReserveSuccessScreen

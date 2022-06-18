@@ -1,7 +1,7 @@
 import React from 'react'
 import { initializeApp } from 'firebase/app'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getFirestore, doc, getDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, deleteDoc } from 'firebase/firestore'
 import { useFonts, Oswald_400Regular } from '@expo-google-fonts/oswald'
 import { Lato_900Black, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import AppLoading from 'expo-app-loading'
@@ -10,6 +10,8 @@ import AuthStack from './navigation/AuthStack'
 import { LogBox } from 'react-native'
 import { UserContext } from './contexts/UserContext'
 import * as Notifications from 'expo-notifications'
+import isInThePast from './utils/pastCheck'
+import addMonths from './utils/addMonths'
 
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 LogBox.ignoreLogs(['AsyncStorage has been extracted from react-native'])
@@ -38,6 +40,7 @@ export default function App() {
     const auth = getAuth()
     const db = getFirestore()
     const [user, setUser] = React.useState()
+    const [membership, setMembership] = React.useState()
     const [loading, setLoading] = React.useState(true)
     const [fontsLoaded] = useFonts({
         Lato_900Black,
@@ -57,7 +60,36 @@ export default function App() {
                                 uid: user.uid,
                                 ...res.data()
                             })
+                            getDoc(doc(db, 'memberships', user.uid))
+                                .then(resMem => {
+                                    if (resMem.exists()) {
+                                        if (!isInThePast(new Date(resMem.data().endDate))) {
+                                            setMembership(resMem.data())
+                                        }
+                                        else {
+                                            if (resMem.data().recurring) {
+                                                const newEndDate = addMonths(new Date(resMem.data().endDate), 1)
+                                                setMembership({
+                                                    ...resMem.data(),
+                                                    endDate: newEndDate
+                                                })
+
+                                                updateDoc(doc(db, 'memberships', user.uid), {
+                                                    endDate: newEndDate
+                                                })
+
+                                                // TODO: send post request for stripe
+                                                // TODO: for loop and check number of months
+                                            }
+                                            else {
+                                                setMembership()
+                                                deleteDoc(doc(db, 'memberships', user.uid))
+                                            }
+                                        }
+                                    }
+                                })
                         }
+
                         else {
                             setUser(undefined)
                         }
@@ -101,5 +133,5 @@ export default function App() {
             .catch(error => console.log(error))
     }, [])
 
-    return loading ? <AppLoading /> : user ? <UserContext.Provider value={user}><AppNavigator /></UserContext.Provider> : <AuthStack />
+    return loading ? <AppLoading /> : user ? <UserContext.Provider value={{ user, setUser, membership, setMembership }}><AppNavigator /></UserContext.Provider> : <AuthStack />
 }

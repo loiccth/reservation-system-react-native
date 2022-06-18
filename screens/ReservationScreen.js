@@ -3,8 +3,10 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Button, ScrollView
 import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Slider from '@react-native-community/slider'
+import { UserContext } from '../contexts/UserContext'
 
 const ReservationScreen = ({ route, navigation }) => {
+    const { membership } = React.useContext(UserContext)
     const today = new Date()
     const tomorrow = new Date(today)
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -21,11 +23,13 @@ const ReservationScreen = ({ route, navigation }) => {
         }
     })
     const [price, setPrice] = React.useState(0)
+    const [discount, setDiscount] = React.useState(0)
     const [slots, setSlots] = React.useState([])
     const [splitSlots, setSplitSlots] = React.useState([])
     const [splitPackages, setSplitPackages] = React.useState([])
     const [show, setShow] = React.useState(false)
     const [showDate, setShowDate] = React.useState(false)
+    const [membershipFamily, setMembershipFamily] = React.useState(false)
     const { complex } = route.params
     const db = getFirestore()
 
@@ -55,6 +59,12 @@ const ReservationScreen = ({ route, navigation }) => {
             }
             setSplitPackages(temp)
         }
+
+        if (membership) {
+            if (membership.type == 'Family') {
+                setMembershipFamily(true)
+            }
+        }
     }, [])
 
     React.useEffect(() => {
@@ -74,10 +84,29 @@ const ReservationScreen = ({ route, navigation }) => {
 
     React.useEffect(() => {
         if (showDate && reservationDetails.hourSlot != -1 && reservationDetails.package != 'none' && reservationDetails.packageDetails != null) {
-            let price = 0
-            price += reservationDetails.packageDetails.price * reservationDetails.people.adult
-            price += reservationDetails.packageDetails.kidPrice * reservationDetails.people.children
-            setPrice(price)
+            const adultPrice = reservationDetails.packageDetails.price * reservationDetails.people.adult
+            const childPrice = reservationDetails.packageDetails.kidPrice * reservationDetails.people.children
+            let discount = 0
+
+            if (membership) {
+                if (membership.type === 'Basic') {
+                    discount += 0.25 * adultPrice
+                    discount += 0.25 * childPrice
+                }
+                else if (membership.type === 'Family') {
+                    discount += 0.25 * adultPrice
+                    discount += 0.25 * childPrice
+                }
+                else if (membership.type == 'VIP') {
+                    discount += adultPrice
+                    discount += childPrice
+                }
+                setDiscount(discount)
+                setPrice((adultPrice + childPrice) - discount)
+            }
+            else {
+                setPrice(adultPrice + childPrice)
+            }
         }
     }, [reservationDetails, showDate])
 
@@ -194,53 +223,54 @@ const ReservationScreen = ({ route, navigation }) => {
                         </View>
                     )}
                 </View>
+                {membershipFamily &&
+                    <View style={styles.block}>
+                        <Text style={styles.headers}>Number of people:</Text>
 
-                <View style={styles.block}>
-                    <Text style={styles.headers}>Number of people:</Text>
-
-                    <View style={{ alignItems: 'center' }}>
-                        <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                            <Text>Adults: </Text>
-                            <Text style={{ fontWeight: 'bold' }}>{reservationDetails.people.adult}</Text>
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                                <Text>Adults: </Text>
+                                <Text style={{ fontWeight: 'bold' }}>{reservationDetails.people.adult}</Text>
+                            </View>
+                            <Slider
+                                style={{ width: '80%', height: 40 }}
+                                minimumValue={1}
+                                maximumValue={10}
+                                step={1}
+                                value={reservationDetails.people.adult}
+                                minimumTrackTintColor="#393E46"
+                                maximumTrackTintColor="#222831"
+                                thumbTintColor="#00ADB5"
+                                onValueChange={updateAdult}
+                            />
                         </View>
-                        <Slider
-                            style={{ width: '80%', height: 40 }}
-                            minimumValue={1}
-                            maximumValue={10}
-                            step={1}
-                            value={reservationDetails.people.adult}
-                            minimumTrackTintColor="#393E46"
-                            maximumTrackTintColor="#222831"
-                            thumbTintColor="#00ADB5"
-                            onValueChange={updateAdult}
-                        />
-                    </View>
 
-                    <View style={{ alignItems: 'center' }}>
-                        <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                            <Text>Children: </Text>
-                            <Text style={{ fontWeight: 'bold' }}>{reservationDetails.people.children}</Text>
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                                <Text>Children: </Text>
+                                <Text style={{ fontWeight: 'bold' }}>{reservationDetails.people.children}</Text>
+                            </View>
+                            <Slider
+                                style={{ width: '80%', height: 40 }}
+                                minimumValue={0}
+                                maximumValue={10}
+                                step={1}
+                                value={reservationDetails.people.children}
+                                minimumTrackTintColor="#393E46"
+                                maximumTrackTintColor="#222831"
+                                thumbTintColor="#00ADB5"
+                                onValueChange={updateKid}
+                            />
                         </View>
-                        <Slider
-                            style={{ width: '80%', height: 40 }}
-                            minimumValue={0}
-                            maximumValue={10}
-                            step={1}
-                            value={reservationDetails.people.children}
-                            minimumTrackTintColor="#393E46"
-                            maximumTrackTintColor="#222831"
-                            thumbTintColor="#00ADB5"
-                            onValueChange={updateKid}
-                        />
                     </View>
-                </View>
+                }
                 <View>
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                         <Text style={styles.price}>Total Price: Rs <Text style={{ fontWeight: '700' }}>{price}</Text></Text>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                         <TouchableOpacity disabled={price === 0}
-                            onPress={() => navigation.navigate('ReservationReview', { complex, reservationDetails: { ...reservationDetails, date: reservationDetails.date.toISOString() }, price })}
+                            onPress={() => navigation.navigate('ReservationReview', { complex, reservationDetails: { ...reservationDetails, date: reservationDetails.date.toISOString() }, price, discount })}
                             style={{ ...styles.price, backgroundColor: price === 0 ? '#8f8f8f' : '#00ADB5', borderColor: price === 0 ? '#8f8f8f' : '#00ADB5' }}>
                             <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Proceed to review</Text>
                         </TouchableOpacity>

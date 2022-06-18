@@ -1,31 +1,24 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ScrollView } from 'react-native'
-import { getFirestore, collection, getDocs, query, where, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, query, where, doc, setDoc, updateDoc } from 'firebase/firestore'
 import illustration from '../assets/undraw_Order_confirmed_re_g0if.png'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
+import addMonths from '../utils/addMonths'
 
-const PaymentSuccessScreen = ({ route, navigation }) => {
+const MembershipPaymentSuccessScreen = ({ route, navigation }) => {
     const user = React.useContext(UserContext).user
-    const { complex, reservationDetails, reservationId, price, discount } = route.params
+    const { type, price, recurring } = route.params
     const db = getFirestore()
 
     React.useEffect(() => {
-        axios.post('http://192.168.100.50:8080/api/v1/reservation',
-            {
-                complex,
-                reservationDetails,
-                price,
-                discount,
-                phone: user.phone,
-                email: user.email
-            })
+        axios.post('http://192.168.100.50:8080/api/v1/membership', { id: user.uid, price, phone: user.phone, email: user.email })
             .then(() => {
-                updateDoc(doc(db, 'reservations', reservationId), {
-                    paid: true,
-                    paymentDetails: {
-                        date: new Date().toISOString()
-                    }
+                setDoc(doc(db, 'memberships', user.uid), {
+                    type,
+                    startDate: new Date().toISOString(),
+                    endDate: addMonths(new Date(), 1).toISOString(),
+                    recurring
                 })
             })
             .catch(err => console.log(err))
@@ -33,7 +26,7 @@ const PaymentSuccessScreen = ({ route, navigation }) => {
         const unsubscribe = navigation.addListener('beforeRemove', e => {
             e.preventDefault()
             unsubscribe()
-            navigation.navigate('Main')
+            navigation.navigate('Membership')
         })
     }, [])
 
@@ -46,17 +39,16 @@ const PaymentSuccessScreen = ({ route, navigation }) => {
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <Image source={illustration} style={styles.illustration} />
                 <View style={{ alignItems: 'center' }}>
-                    <Text>Reservation confirmed.</Text>
+                    <Text>Payment confirmed.</Text>
                     <Text>You'll receive your receipt by email/SMS.</Text>
-                    <Text>To view your reservation, go in reservation tab.</Text>
                 </View>
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 30 }}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Main')}
+                    onPress={() => navigation.navigate('Membership')}
                     style={{ ...styles.price, width: 140, alignItems: 'center', backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
-                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Main menu</Text>
+                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Okay!</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -118,4 +110,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PaymentSuccessScreen
+export default MembershipPaymentSuccessScreen

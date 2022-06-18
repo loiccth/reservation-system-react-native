@@ -1,9 +1,7 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ScrollView, ToastAndroid } from 'react-native'
-import { getFirestore, collection, addDoc, query, where, doc, getDoc } from 'firebase/firestore'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ScrollView, ToastAndroid, Switch } from 'react-native'
 import illustration from '../assets/undraw_Credit_card_re_blml.png'
 import * as yup from 'yup'
-import { UserContext } from '../contexts/UserContext'
 
 let schema = yup.object().shape({
     expiryDate: yup.string().matches(/^(0[1-9]|1[0-2])\/?(2[2-9])$/, 'Invalid expiry date.').required('Expiry date field is required.'),
@@ -13,10 +11,8 @@ let schema = yup.object().shape({
     card: yup.string().length(16, 'Invalid card No. length.').required('Card No. field is required.')
 })
 
-const PaymentScreen = ({ route, navigation }) => {
-    const { add, complex, reservationDetails, price, discount } = route.params
-    const [reservationId, setReservationId] = React.useState()
-    const user = React.useContext(UserContext).user
+const MembershipPaymentScreen = ({ route, navigation }) => {
+    const { type, price } = route.params
     const [creditCard, setCreditCard] = React.useState({
         cardNo: '',
         name: '',
@@ -24,36 +20,11 @@ const PaymentScreen = ({ route, navigation }) => {
         cvc: '',
         billingAddress: ''
     })
-    const db = getFirestore()
+    const [recurring, setRecurring] = React.useState(false)
     const ref_input1 = React.useRef()
     const ref_input2 = React.useRef()
     const ref_input3 = React.useRef()
     const ref_input4 = React.useRef()
-
-    React.useEffect(() => {
-        if (add) {
-            addDoc(collection(db, 'reservations'),
-                { ...reservationDetails, paid: false, paymentDetails: null, user: user.email, status: 'A', complex })
-                .then(result => {
-                    console.log(`reservation saved => ${result._key.path.segments[1]}`)
-                    setReservationId(result._key.path.segments[1])
-                })
-                .catch(err => {
-                    console.log(err)
-                    // ToastAndroid.show(err.message + '', ToastAndroid.SHORT)
-                })
-
-            const unsubscribe = navigation.addListener('beforeRemove', e => {
-                e.preventDefault()
-                unsubscribe()
-                navigation.navigate('Main')
-            })
-        }
-        else {
-            console.log(`reservation not added => ${reservationDetails.id}`)
-            setReservationId(reservationDetails.id)
-        }
-    }, [])
 
     const handleFields = (field, data) => {
         if (field === 'card') {
@@ -115,7 +86,7 @@ const PaymentScreen = ({ route, navigation }) => {
             card: creditCard.cardNo.replace(/ /g, '')
         })
             .then(() => {
-                navigation.navigate('PaymentSuccess', { complex, reservationDetails, reservationId, price, discount })
+                navigation.navigate('MembershipPaymentSuccess', { type, price, recurring })
             })
             .catch(err => {
                 console.log(err)
@@ -126,7 +97,7 @@ const PaymentScreen = ({ route, navigation }) => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Reservation Payment</Text>
+                <Text style={styles.headerText}>{type} Membership Payment</Text>
             </View>
 
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -201,26 +172,39 @@ const PaymentScreen = ({ route, navigation }) => {
                         blurOnSubmit={false}
                     />
                 </View>
-                <View style={{ marginTop: 20, width: '30%' }}>
-                    <View width={'100%'} >
-                        <Text style={styles.label}>Expiration Date</Text>
+                <View style={{ marginTop: 20, width: '60%', flexDirection: 'row' }}>
+                    <View style={{ marginRight: 15 }}>
+                        <View width={'100%'} >
+                            <Text style={styles.label}>Expiration Date</Text>
+                        </View>
+                        <TextInput style={styles.inputText}
+                            placeholderTextColor='#c4cfce'
+                            value={creditCard.expiryDate}
+                            selectionColor={'#919191'}
+                            keyboardType='numeric'
+                            maxLength={5}
+                            onChangeText={text => handleFields('date', text)}
+                            ref={ref_input4}
+                        />
                     </View>
-                    <TextInput style={styles.inputText}
-                        placeholderTextColor='#c4cfce'
-                        value={creditCard.expiryDate}
-                        selectionColor={'#919191'}
-                        keyboardType='numeric'
-                        maxLength={5}
-                        onChangeText={text => handleFields('date', text)}
-                        ref={ref_input4}
-                    />
+                    <View style={{ alignItems: 'center' }}>
+                        <View width={'100%'} >
+                            <Text style={styles.label}>Recurring Payment</Text>
+                        </View>
+                        <Switch
+                            trackColor={{ false: '#393E46', true: '#00ADB5' }}
+                            thumbColor={'#f4f3f4'}
+                            onValueChange={(e) => setRecurring(e)}
+                            value={recurring}
+                        />
+                    </View>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Main')}
+                        onPress={() => navigation.navigate('Membership')}
                         style={{ ...styles.price, width: 140, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
-                        <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Pay later</Text>
+                        <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Cancel</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={validatePaymentDetails}
@@ -288,4 +272,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PaymentScreen
+export default MembershipPaymentScreen

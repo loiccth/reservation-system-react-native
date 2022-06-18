@@ -2,13 +2,11 @@ import React from 'react'
 import { StyleSheet, Text, View, Button, Platform, StatusBar, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native'
 import { getAuth, signOut } from 'firebase/auth'
 import illustration from '../assets/undraw_set_preferences_kwia.png'
-import { UserContext } from '../contexts/UserContext'
 import { Ionicons } from '@expo/vector-icons'
 import { Card } from 'react-native-paper'
 
 const SettingsScreen = ({ navigation }) => {
     const auth = getAuth()
-    const user = React.useContext(UserContext)
 
     return (
         <ScrollView style={styles.container}>
@@ -19,7 +17,7 @@ const SettingsScreen = ({ navigation }) => {
 
             <View style={styles.settingTabs}>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('Account')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>Account</Text>
                         </View>
@@ -29,7 +27,7 @@ const SettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('Membership')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>Membership</Text>
                         </View>
@@ -39,7 +37,7 @@ const SettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('AboutUs')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>About Us</Text>
                         </View>
@@ -49,7 +47,7 @@ const SettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('TermsConditions')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>Terms and Conditions</Text>
                         </View>
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
     },
     illustration: {
-        width: 200,
+        width: 270,
         height: 200,
     },
     btn: {

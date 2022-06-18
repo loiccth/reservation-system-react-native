@@ -105,7 +105,7 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
                     </View> */}
                     <View style={{ marginTop: 10 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Description: </Text>
-                        <Text>{complex.description}</Text>
+                        <Text style={{ textAlign: 'justify' }}>{complex.description}</Text>
                     </View>
                     <View style={{ marginLeft: 10, marginTop: 10 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 14 }}>Facilities: </Text>

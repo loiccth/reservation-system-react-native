@@ -11,7 +11,7 @@ const ViewReservationScreen = ({ navigation }) => {
     const [tab, setTab] = React.useState('active')
     const [active, setActive] = React.useState([])
     const [completed, setCompleted] = React.useState([])
-    const user = React.useContext(UserContext)
+    const user = React.useContext(UserContext).user
     const db = getFirestore()
 
     // console.log(active)
@@ -72,7 +72,7 @@ const ViewReservationScreen = ({ navigation }) => {
                         backgroundColor: tab === 'completed' ? '#00ADB5' : '#393E46',
                     }}
                 >
-                    <Text style={{ ...styles.tabText, color: tab === 'completed' ? '#eee' : '#eee' }}>Completed</Text>
+                    <Text style={{ ...styles.tabText, color: tab === 'completed' ? '#eee' : '#eee' }}>Others</Text>
                 </TouchableOpacity>
             </View>
 
