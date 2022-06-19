@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ToastAndroid } from 'react-native'
-import { getFirestore, collection, getDocs, query, where, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, query, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { getAuth, signOut } from 'firebase/auth'
 import illustration from '../assets/undraw_two_factor_authentication_namy.png'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
@@ -9,6 +10,7 @@ import isInThePast from '../utils/pastCheck'
 const MFAScreen = ({ navigation }) => {
     const { user, setUser } = React.useContext(UserContext)
     const db = getFirestore()
+    const auth = getAuth()
     const [disable, setDisable] = React.useState(true)
     const [code, setCode] = React.useState()
 
@@ -28,18 +30,25 @@ const MFAScreen = ({ navigation }) => {
                         ToastAndroid.show('MFA code expired.', ToastAndroid.SHORT)
                     }
                     else {
-                        deleteDoc(doc(db, 'mfa', user.email))
-                        updateDoc(doc(db, 'users', user.uid), {
-                            mfa: false
-                        })
-                        setUser({
-                            ...user,
-                            mfa: false
-                        })
-                        navigation.navigate('App')
+                        if (res.data().code === code) {
+                            deleteDoc(doc(db, 'mfa', user.email))
+                            updateDoc(doc(db, 'users', user.uid), {
+                                mfa: false
+                            })
+                            setUser({
+                                ...user,
+                                mfa: false
+                            })
+                            navigation.navigate('App')
+                        }
+                        else {
+                            setCode()
+                            ToastAndroid.show('MFA validation failed.', ToastAndroid.SHORT)
+                        }
                     }
                 }
                 else {
+                    setCode()
                     ToastAndroid.show('MFA validation failed.', ToastAndroid.SHORT)
                 }
             })
@@ -94,11 +103,17 @@ const MFAScreen = ({ navigation }) => {
                         value={code}
                         keyboardType='numeric'
                         selectionColor={'#919191'}
+                        onChangeText={text => setCode(text)}
                     />
                 </View>
             </View>
 
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity
+                    onPress={() => signOut(auth)}
+                    style={{ ...styles.price, width: 140, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
+                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Logout</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={validateMFA}
                     style={{ ...styles.price, width: 140, alignItems: 'center', backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
