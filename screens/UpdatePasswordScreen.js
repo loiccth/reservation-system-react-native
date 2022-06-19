@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ScrollView, ToastAndroid } from 'react-native'
 import { getFirestore, collection, addDoc, query, where, doc, updateDoc } from 'firebase/firestore'
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth'
 import illustration from '../assets/undraw_secure_login_pdn4.png'
 import * as yup from 'yup'
 import { UserContext } from '../contexts/UserContext'
@@ -21,6 +22,7 @@ const UpdatePasswordScreen = ({ navigation }) => {
     })
     const ref_input1 = React.useRef()
     const ref_input2 = React.useRef()
+    const auth = getAuth()
 
     const updatePasswords = (e, data) => {
         if (e === 'oldPassword') {
@@ -43,16 +45,34 @@ const UpdatePasswordScreen = ({ navigation }) => {
         }
     }
 
-    const updatePassword = () => {
+    const handleUpdatePassword = () => {
         schema.validate({
             oldPassword: passwords.oldPassword,
             newPassword: passwords.newPassword,
             confirmPassword: passwords.confirmPassword
         })
-            .then(() => {
+            .then(async () => {
                 if (passwords.newPassword === passwords.confirmPassword) {
-                    // TODO: Implement change password
-
+                    const cred = EmailAuthProvider.credential(user.email, passwords.oldPassword)
+                    try {
+                        setPasswords({
+                            oldPassword: '',
+                            newPassword: '',
+                            confirmPassword: ''
+                        })
+                        await reauthenticateWithCredential(auth.currentUser, cred)
+                        await updatePassword(auth.currentUser, passwords.newPassword)
+                        navigation.navigate('Account')
+                        ToastAndroid.show('Password updated.', ToastAndroid.SHORT)
+                    } catch (e) {
+                        console.log(e)
+                        setPasswords({
+                            oldPassword: '',
+                            newPassword: '',
+                            confirmPassword: ''
+                        })
+                        ToastAndroid.show('Incorrect old password.', ToastAndroid.SHORT)
+                    }
                 }
                 else {
                     setPasswords({
@@ -135,7 +155,7 @@ const UpdatePasswordScreen = ({ navigation }) => {
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <TouchableOpacity
-                        onPress={updatePassword}
+                        onPress={handleUpdatePassword}
                         style={{ ...styles.price, width: 140, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
                         <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Update password</Text>
                     </TouchableOpacity>

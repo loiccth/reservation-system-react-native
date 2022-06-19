@@ -7,14 +7,15 @@ import {
     TouchableOpacity,
     Platform,
     StatusBar,
+    ToastAndroid,
     Image
 } from 'react-native'
 import * as yup from 'yup'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import illustration from '../assets/undraw_Forgot_password_re_hxwm.png'
+import axios from 'axios'
 
 let schema = yup.object().shape({
-    email: yup.string().email().required()
+    email: yup.string().email('Incorrect email format.').required('Email field is required.')
 })
 
 const ForgotPasswordScreen = ({ navigation }) => {
@@ -23,16 +24,27 @@ const ForgotPasswordScreen = ({ navigation }) => {
         error: ''
     })
 
-    const auth = getAuth()
-
-    const handleSignIn = () => {
+    const handleReset = () => {
         schema.validate({
             email: data.email
         })
             .then(() => {
-                signInWithEmailAndPassword(auth, data.email, data.password)
+                axios.post('http://localhost:8080/api/v1/user/reset', { email: data.email })
+                    .then(() => {
+                        setData({
+                            email: '',
+                            error: ''
+                        })
+                        navigation.navigate('Sign In')
+                        ToastAndroid.show('Password reset successful.', ToastAndroid.SHORT)
+                    })
                     .catch(err => {
-                        setData({ error: err.message, email: '' })
+                        console.log(err)
+                        setData({
+                            ...data,
+                            error: 'Email is not linked to any account.',
+                            email: ''
+                        })
                     })
             })
             .catch(err => {
@@ -66,7 +78,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
                 <Text style={styles.error}>{data.error}</Text>
             }
 
-            <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+            <TouchableOpacity style={styles.button} onPress={handleReset}>
                 <Text style={styles.buttonTxt}>Reset password</Text>
             </TouchableOpacity>
 
