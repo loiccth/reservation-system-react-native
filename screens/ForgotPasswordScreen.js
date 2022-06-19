@@ -20,11 +20,13 @@ let schema = yup.object().shape({
 
 const ForgotPasswordScreen = ({ navigation }) => {
     const [data, setData] = React.useState({
-        email: '',
-        error: ''
+        email: ''
     })
+    const [process, setProcess] = React.useState(false)
 
     const handleReset = () => {
+        setProcess(true)
+
         schema.validate({
             email: data.email
         })
@@ -40,52 +42,61 @@ const ForgotPasswordScreen = ({ navigation }) => {
                     })
                     .catch(err => {
                         console.log(err)
-                        setData({
-                            ...data,
-                            error: 'Email is not linked to any account.',
-                            email: ''
-                        })
+                        ToastAndroid.show('Email is not linked to any account.', ToastAndroid.SHORT)
                     })
+                    .finally(() => setProcess(false))
             })
             .catch(err => {
-                setData({
-                    ...data,
-                    error: err.errors,
-                    email: ''
-                })
+                ToastAndroid.show(err.message, ToastAndroid.SHORT)
             })
+            .finally(() => setProcess(false))
     }
 
     return (
         <View style={styles.container}>
-            <Image source={illustration} style={styles.illustration} />
-
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Forgot Passwword</Text>
-
-            <View width={300}>
-                <Text style={styles.label}>Email</Text>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Forgot Password</Text>
             </View>
-            <TextInput style={styles.inputText}
-                placeholderTextColor='#c4cfce'
-                placeholder='Email'
-                value={data.email}
-                keyboardType='email-address'
-                autoCapitalize='none'
-                onChangeText={text => setData({ ...data, email: text })}
-            />
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+                <Image source={illustration} style={styles.illustration} />
+            </View>
 
-            {data.error !== '' &&
-                <Text style={styles.error}>{data.error}</Text>
-            }
-
-            <TouchableOpacity style={styles.button} onPress={handleReset}>
-                <Text style={styles.buttonTxt}>Reset password</Text>
-            </TouchableOpacity>
+            <View style={{ ...styles.bodyContainer, alignItems: 'center', marginTop: 80 }}>
+                <View style={{ width: 300 }}>
+                    <View width={'100%'} >
+                        <Text style={styles.label}>Email *</Text>
+                    </View>
+                    <TextInput style={styles.inputText}
+                        placeholderTextColor='#c4cfce'
+                        placeholder='Email'
+                        value={data.email}
+                        keyboardType='email-address'
+                        autoCapitalize='none'
+                        onChangeText={text => setData({ email: text })}
+                        selectionColor={'#919191'}
+                    />
+                </View>
+            </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
                 <Text style={{ marginRight: 5 }}>Already have an account?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Sign In')}>
                     <Text style={styles.buttons}>Login here</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                <TouchableOpacity
+                    disabled={process}
+                    onPress={handleReset}
+                    style={{
+                        ...styles.action,
+                        width: 140,
+                        alignItems: 'center',
+                        backgroundColor: process ? '#393E46' : '#00ADB5',
+                        borderColor: process ? '#393E46' : '#00ADB5',
+                    }}>
+                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Reset password</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -98,44 +109,55 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding: 0,
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
     },
-    illustration: {
-        width: 200,
-        height: 200,
+    header: {
+        alignItems: 'center',
+        marginVertical: 0,
+        width: '100%',
+        backgroundColor: '#393E46',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20
     },
-    label: {
-        alignSelf: 'flex-start',
-        color: '#333',
-        fontWeight: 'bold'
+    illustration: {
+        width: 270,
+        height: 200,
+        backgroundColor: '#333'
+    },
+    headerText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#EEEEEE',
+        marginVertical: 10
+    },
+    bodyContainer: {
+        padding: 10,
+        marginTop: 30
     },
     inputText: {
-        margin: 10,
         borderWidth: 1,
         borderRadius: 10,
         borderColor: '#aeb0af',
-        padding: 10,
-        width: 300,
-        color: '#333'
+        padding: 3,
+        paddingLeft: 10,
+        color: '#393E46'
     },
-    error: {
-        color: '#ff0000',
-        margin: 5
+    label: {
+        alignSelf: 'flex-start',
+        color: '#393E46',
+        fontWeight: 'bold'
     },
-    button: {
-        backgroundColor: '#6C63FF',
-        padding: 15,
-        width: 300,
-        alignItems: 'center',
-        borderRadius: 10,
-        margin: 10
-    },
-    buttonTxt: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: '#fff'
+    action: {
+        fontSize: 18,
+        margin: 3,
+        padding: 8,
+        paddingRight: 12,
+        paddingHorizontal: 15,
+        borderWidth: 1,
+        borderColor: '#393E46',
+        color: '#393E46',
+        borderRadius: 50
     },
     buttons: {
         fontWeight: 'bold',

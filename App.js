@@ -49,13 +49,6 @@ export default function App() {
         Oswald_400Regular,
     })
 
-    const checkMFA = (date) => {
-        const today = new Date()
-        today.setMinutes(today.getMinutes + 3)
-
-
-    }
-
     React.useEffect(() => {
         onAuthStateChanged(auth, (user1) => {
             if (user1) {
@@ -142,5 +135,11 @@ export default function App() {
             .catch(error => console.log(error))
     }, [])
 
-    return loading ? <AppLoading /> : user ? <UserContext.Provider value={{ user, setUser, membership, setMembership }}><MFAStack showMFA={user.mfa} /></UserContext.Provider> : <AuthStack />
+    return loading ? <AppLoading /> : user ?
+        <UserContext.Provider value={{ user, setUser, membership, setMembership }}>
+            <MFAStack showMFA={user.mfa} />
+        </UserContext.Provider> :
+        <UserContext.Provider value={{ user, setUser, membership, setMembership }}>
+            <AuthStack />
+        </UserContext.Provider>
 }
