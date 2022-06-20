@@ -1,32 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Button, ScrollView, Alert } from 'react-native'
-import { getFirestore, collection, updateDoc, query, where, doc, getDoc } from 'firebase/firestore'
 import { Ionicons } from '@expo/vector-icons'
-import QRCode from 'react-native-qrcode-svg'
 
-const ViewReservationDetailsScreen = ({ route, navigation }) => {
+const ViewUserReservationDetailsScreen = ({ route, navigation }) => {
     const { complex, reservationDetails, price } = route.params
-    const [viewQR, setViewQR] = React.useState(false)
-    const db = getFirestore()
-
-    const handleCancel = () => {
-        console.log(`cancel reservation => ${reservationDetails.id}`)
-        updateDoc(doc(db, 'reservations', reservationDetails.id), {
-            status: 'CA',
-            cancelDate: new Date().toISOString()
-        }).then(() => navigation.navigate('Main'))
-    }
-
-    const createTwoButtonAlert = () => {
-        Alert.alert('Cancellation', 'Are you sure you want to cancel this reservation?', [
-            {
-                text: 'Cancel',
-                onPress: () => { },
-                style: 'cancel',
-            },
-            { text: 'Yes', onPress: () => handleCancel() },
-        ])
-    }
 
     return (
         <ScrollView style={styles.container}>
@@ -34,7 +11,7 @@ const ViewReservationDetailsScreen = ({ route, navigation }) => {
                 <Text style={styles.headerText}>View Reservation</Text>
             </View>
 
-            {!viewQR && <View style={styles.reservationInfo}>
+            <View style={styles.reservationInfo}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <View><Text style={{ fontSize: 16, fontWeight: '700' }}>Field</Text></View>
@@ -82,49 +59,7 @@ const ViewReservationDetailsScreen = ({ route, navigation }) => {
                         }
                     </View>
                 </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                    {reservationDetails.status === 'A' &&
-                        <>
-                            <TouchableOpacity
-                                onPress={createTwoButtonAlert}
-                                style={{ ...styles.price, width: 160, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
-                                <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Cancel reservation</Text>
-                            </TouchableOpacity>
-                            {!reservationDetails.paid &&
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('Payment', { add: false, complex, reservationDetails, price })}
-                                    style={{ ...styles.price, width: 160, alignItems: 'center', backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
-                                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Pay reservation</Text>
-                                </TouchableOpacity>
-                            }
-                            {reservationDetails.paid &&
-                                <TouchableOpacity
-                                    onPress={() => setViewQR(true)}
-                                    style={{ ...styles.price, width: 160, alignItems: 'center', backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
-                                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>View QR Code</Text>
-                                </TouchableOpacity>
-                            }
-                        </>
-                    }
-                </View>
-            </View>}
-            {viewQR &&
-                <View style={{ alignItems: 'center', marginTop: 30, marginBottom: 10 }}>
-                    <View style={{ marginTop: 30, marginBottom: 60 }}>
-                        <QRCode
-                            size={330}
-                            value={reservationDetails.id}
-                        />
-                    </View>
-                    <Text style={{ marginVertical: 10 }}>Present this QR Code at the entrance of the facility.</Text>
-                    <TouchableOpacity
-                        onPress={() => setViewQR(false)}
-                        style={{ ...styles.price, width: 160, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
-                        <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Close QR</Text>
-                    </TouchableOpacity>
-                </View>
-            }
+            </View>
         </ScrollView>
     )
 }
@@ -153,18 +88,7 @@ const styles = StyleSheet.create({
     reservationInfo: {
         padding: 10,
         marginTop: 30
-    },
-    price: {
-        fontSize: 18,
-        margin: 3,
-        padding: 8,
-        paddingRight: 12,
-        paddingHorizontal: 15,
-        borderWidth: 1,
-        borderColor: '#393E46',
-        color: '#393E46',
-        borderRadius: 50
     }
 })
 
-export default ViewReservationDetailsScreen
+export default ViewUserReservationDetailsScreen

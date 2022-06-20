@@ -1,17 +1,16 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid } from 'react-native'
 import { getFirestore, collection, addDocs, query, where, doc, getDocs } from 'firebase/firestore'
-import { UserContext } from '../contexts/UserContext'
 import { useFocusEffect } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
 import { Card } from 'react-native-paper'
 import NoReservation from '../components/NoReservations'
 
-const ViewReservationsScreen = ({ navigation }) => {
+const ViewUserReservationsScreen = ({ route, navigation }) => {
     const [tab, setTab] = React.useState('active')
     const [active, setActive] = React.useState([])
     const [completed, setCompleted] = React.useState([])
-    const user = React.useContext(UserContext).user
+    const { user } = route.params
     const db = getFirestore()
 
     // console.log(active)
@@ -86,7 +85,7 @@ const ViewReservationsScreen = ({ navigation }) => {
                         {active.map((reser, i) =>
                             <Card key={i} style={styles.card} elevation={10}>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('DetailsReservation', {
+                                    onPress={() => navigation.navigate('UserReservationDetails', {
                                         complex: reser.complex,
                                         reservationDetails: reser,
                                         price: (reser.packageDetails.price * reser.people.adult) + (reser.packageDetails.kidPrice * reser.people.children)
@@ -129,7 +128,7 @@ const ViewReservationsScreen = ({ navigation }) => {
                         {completed.map((reser, i) =>
                             <Card key={i} style={styles.card} elevation={10}>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('DetailsReservation', {
+                                    onPress={() => navigation.navigate('UserReservationDetails', {
                                         complex: reser.complex,
                                         reservationDetails: reser,
                                         price: (reser.packageDetails.price * reser.people.adult) + (reser.packageDetails.kidPrice * reser.people.children)
@@ -203,4 +202,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ViewReservationsScreen
+export default ViewUserReservationsScreen

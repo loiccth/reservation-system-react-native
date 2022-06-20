@@ -1,20 +1,62 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore'
+import { StyleSheet, View } from 'react-native'
 import UserCard from './UserCard'
+import NoUsers from './NoUsers'
+import { useFocusEffect } from '@react-navigation/native'
 
-const UserList = ({ users }) => {
+const UserList = ({ tab, navigation }) => {
+    const db = getFirestore()
+    const [users, setUsers] = React.useState([])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            (async () => {
+                let temp = []
+
+                getDocs(query(collection(db, 'users'), where('vaccineValidated', '==', tab)))
+                    .then(querySnapshot => {
+                        querySnapshot.forEach((doc) => {
+                            // console.log(doc.id, " => ", doc.data())
+                            temp.push({
+                                ...doc.data(),
+                                uid: doc.id
+                            })
+                        })
+                        setUsers(temp)
+                    })
+                    .catch(err => console.log(err))
+            })()
+        }, [tab])
+    )
+
+    // React.useEffect(async () => {
+    //     let temp = []
+
+    //     try {
+    //         const querySnapshot = await getDocs(query(collection(db, 'users'), where('vaccineValidated', '==', tab)))
+    //         querySnapshot.forEach((doc) => {
+    //             // console.log(doc.id, " => ", doc.data())
+    //             temp.push({
+    //                 ...doc.data(),
+    //                 uid: doc.id
+    //             })
+    //         })
+    //     }
+    //     catch (e) {
+    //         console.log(e)
+    //     }
+    //     setUsers(temp)
+    // }, [tab])
+
     return (
         <View>
             {users.length === 0 &&
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontFamily: 'Oswald_400Regular', fontSize: 16 }}>
-                        No users found
-                    </Text>
-                </View>
+                <NoUsers />
             }
 
             {users.map((user, index) =>
-                <UserCard key={index} user={user} />
+                <UserCard key={index} user={user} navigation={navigation} />
             )}
         </View>
     )

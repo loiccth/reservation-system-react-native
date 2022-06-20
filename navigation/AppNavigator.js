@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MapScreen from '../screens/MapScreen'
 import { UserContext } from '../contexts/UserContext'
 import SettingsStack from './SettingsStack'
-import UsersScreen from '../screens/UsersScreen'
+import UsersStack from './UsersStack'
 import SportsStack from './SportsStack'
 import ReservationsStack from './ReservationsStack'
 
@@ -45,7 +45,7 @@ const AppNavigator = () => {
             <Tab.Screen name='Map' component={MapScreen} />
             <Tab.Screen name='Reservations' component={ReservationsStack} />
             {user.role === 'admin' &&
-                <Tab.Screen name='Users' component={UsersScreen} />
+                <Tab.Screen name='Users' component={UsersStack} />
             }
             <Tab.Screen name='Settings' component={SettingsStack} />
         </Tab.Navigator>

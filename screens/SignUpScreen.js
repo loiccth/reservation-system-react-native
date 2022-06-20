@@ -74,7 +74,7 @@ const SignUpScreen = ({ navigation }) => {
                             lastlogin: new Date().toISOString(),
                             mfa: true,
                             vaccinationCard: link,
-                            vaccineValidated: 'Pending'
+                            vaccineValidated: 'pending'
                         })
                             .then(() => {
                                 console.log('here')
@@ -88,7 +88,7 @@ const SignUpScreen = ({ navigation }) => {
                                     lastlogin: new Date().toISOString(),
                                     mfa: true,
                                     vaccinationCard: link,
-                                    vaccineValidated: 'Pending'
+                                    vaccineValidated: 'pending'
                                 })
                             })
                             .finally(() => setProcess(false))
