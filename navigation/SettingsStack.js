@@ -9,6 +9,8 @@ import MembershipPaymentScreen from '../screens/MembershipPaymentScreen'
 import MembershipPaymentSuccessScreen from '../screens/MembershipPaymentSuccessScreen'
 import AboutUs from '../screens/AboutUs'
 import TermsConditionsScreen from '../screens/TermsConditionsScreen'
+import PoolSettingsScreen from '../screens/PoolSettingsScreen'
+import AddScreen from '../screens/AddScreen'
 
 const Stack = createStackNavigator()
 
@@ -25,6 +27,8 @@ export default function SettingsStack() {
             <Stack.Screen name='Membership' component={MembershipScreen} />
             <Stack.Screen name='MembershipPayment' component={MembershipPaymentScreen} />
             <Stack.Screen name='MembershipPaymentSuccess' component={MembershipPaymentSuccessScreen} />
+            <Stack.Screen name='PoolSettings' component={PoolSettingsScreen} />
+            <Stack.Screen name='AddPool' component={AddScreen} />
             <Stack.Screen name='AboutUs' component={AboutUs} />
             <Stack.Screen name='TermsConditions' component={TermsConditionsScreen} />
         </Stack.Navigator>
