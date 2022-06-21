@@ -11,6 +11,7 @@ import AboutUs from '../screens/AboutUs'
 import TermsConditionsScreen from '../screens/TermsConditionsScreen'
 import PoolSettingsScreen from '../screens/PoolSettingsScreen'
 import AddScreen from '../screens/AddScreen'
+import EnableDisablePoolScreen from '../screens/EnableDisablePoolScreen'
 
 const Stack = createStackNavigator()
 
@@ -29,6 +30,7 @@ export default function SettingsStack() {
             <Stack.Screen name='MembershipPaymentSuccess' component={MembershipPaymentSuccessScreen} />
             <Stack.Screen name='PoolSettings' component={PoolSettingsScreen} />
             <Stack.Screen name='AddPool' component={AddScreen} />
+            <Stack.Screen name='EnableDisablePool' component={EnableDisablePoolScreen} />
             <Stack.Screen name='AboutUs' component={AboutUs} />
             <Stack.Screen name='TermsConditions' component={TermsConditionsScreen} />
         </Stack.Navigator>

@@ -24,7 +24,7 @@ const SportsListScreen = ({ navigation }) => {
 
      useEffect(async () => {
           const temp = []
-          const querySnapshot = await getDocs(collection(db, 'complexes'))
+          const querySnapshot = await getDocs(query(collection(db, 'complexes'), where('status', '==', 'A')))
           querySnapshot.forEach((doc) => {
                // console.log(doc.id, " => ", doc.data())
                temp.push(doc.data())
@@ -56,7 +56,7 @@ const SportsListScreen = ({ navigation }) => {
                (async () => {
                     const temp2 = []
 
-                    const querySnapshot = await getDocs(collection(db, 'complexes'))
+                    const querySnapshot = await getDocs(query(collection(db, 'complexes'), where('status', '==', 'A')))
                     querySnapshot.forEach((doc) => {
                          // console.log(doc.id, " => ", doc.data())
                          temp2.push(doc.data())

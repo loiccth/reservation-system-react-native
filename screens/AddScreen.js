@@ -141,7 +141,8 @@ const AddScreen = ({ navigation }) => {
                     activities: data.activities,
                     facilities: data.facilities,
                     vaccinationRequired: vaccine,
-                    packages
+                    packages,
+                    status: 'A'
                 }).then((docRef) => {
                     // console.log(docRef.id)
                     ToastAndroid.show('Pool successfully added.', ToastAndroid.SHORT)
