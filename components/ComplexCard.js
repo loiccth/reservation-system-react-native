@@ -23,6 +23,10 @@ const ComplexCard = ({ complex, navigation }) => {
                         <Text>Category: </Text>
                         <Text style={{ padding: 3, paddingRight: 7, paddingHorizontal: 10, borderWidth: 1, borderColor: '#393E46', color: '#393E46', borderRadius: 50 }}>{complex.category}</Text>
                     </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                        <Text>Depth: </Text>
+                        <Text style={{ padding: 3, paddingRight: 7, paddingHorizontal: 10, borderWidth: 1, borderColor: '#393E46', color: '#393E46', borderRadius: 50 }}>{complex.depth}M</Text>
+                    </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text><Ionicons name='pricetags-outline' size={20} style={{ color: '#00ADB5' }} /> </Text>
                         {complex.tags.map(tag =>
