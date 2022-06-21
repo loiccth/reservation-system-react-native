@@ -6,6 +6,7 @@ import MapScreen from '../screens/MapScreen'
 import { UserContext } from '../contexts/UserContext'
 import SettingsStack from './SettingsStack'
 import UsersStack from './UsersStack'
+import QRStack from './QRStack'
 import SportsStack from './SportsStack'
 import ReservationsStack from './ReservationsStack'
 
@@ -30,6 +31,8 @@ const AppNavigator = () => {
                         iconName = 'heart'
                     } else if (route.name === 'Users') {
                         iconName = 'person'
+                    } else if (route.name === 'QR Scanner') {
+                        iconName = 'qr-code'
                     } else if (route.name === 'Reservations') {
                         iconName = 'book'
                     }
@@ -45,7 +48,10 @@ const AppNavigator = () => {
             <Tab.Screen name='Map' component={MapScreen} />
             <Tab.Screen name='Reservations' component={ReservationsStack} />
             {user.role === 'admin' &&
-                <Tab.Screen name='Users' component={UsersStack} />
+                <>
+                    <Tab.Screen name='Users' component={UsersStack} />
+                    <Tab.Screen name='QR Scanner' component={QRStack} />
+                </>
             }
             <Tab.Screen name='Settings' component={SettingsStack} />
         </Tab.Navigator>
