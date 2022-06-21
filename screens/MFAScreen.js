@@ -30,7 +30,7 @@ const MFAScreen = ({ navigation }) => {
                         ToastAndroid.show('MFA code expired.', ToastAndroid.SHORT)
                     }
                     else {
-                        if (res.data().code === code) {
+                        if (res.data().code == code) {
                             deleteDoc(doc(db, 'mfa', user.email))
                             updateDoc(doc(db, 'users', user.uid), {
                                 mfa: false
