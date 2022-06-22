@@ -1,18 +1,43 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, ScrollView, Modal } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import ComplexModalRoute from '../components/ComplexModalRoute'
 import { Ionicons } from '@expo/vector-icons'
+import { doc, onSnapshot, getFirestore, collection, query, limit, orderBy, getDocs } from 'firebase/firestore'
 import axios from 'axios'
+import { LineChart, YAxis, XAxis, Grid } from 'react-native-svg-charts'
 
 const ComplexDetailsScreen = ({ route, navigation }) => {
     const [mapModal, setMapModal] = React.useState(false)
     const [weather, setWeather] = React.useState()
     const [showWeather, setShowWeather] = React.useState(false)
+    const [livetemp, setLivetemp] = React.useState('--')
+    const [chart, setChart] = React.useState([])
     const { complex } = route.params
+    const db = getFirestore()
+    const [modalVisible, setModalVisible] = React.useState(false)
 
     const closeMapModal = () => {
         setMapModal(false)
+    }
+
+    const unsub = onSnapshot(doc(db, 'settings', 'livetemp'), (doc) => {
+        setLivetemp(doc.data().temp)
+    })
+
+    const openModal = () => {
+        console.log('here')
+        setModalVisible(true)
+        getDocs(query(collection(db, 'temphistory'), limit(12), orderBy('createdAt', 'desc')))
+            .then(querySnapshot => {
+                const temp = []
+                const temp2 = []
+                querySnapshot.forEach((doc) => {
+                    temp.push(doc.data().temp)
+                })
+                setChart(temp.reverse())
+            })
+            .catch(err => console.log(err))
     }
 
     // TODO: Fix notification
@@ -86,7 +111,7 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }} >Weather info: </Text>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 5 }}>
-                                <Text>Pool water temperature: 16°C</Text>
+                                <Text>Pool water temperature: {livetemp}°C</Text>
                                 {showWeather &&
                                     <>
                                         <Text>Air temperature: {weather.current.temp_c}°C</Text>
@@ -102,10 +127,55 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
                             </View>
                         </View>
                         <View style={{ justifyContent: 'center', width: '100%' }}>
-                            <TouchableOpacity style={styles.tempHistoryBtn}>
+                            <TouchableOpacity style={styles.tempHistoryBtn} onPress={openModal}>
                                 <Text>View water temperature history</Text>
                             </TouchableOpacity>
                         </View>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(!modalVisible)
+                            }}>
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+
+                                    <View style={{ height: 200, flexDirection: 'row' }}>
+                                        <YAxis
+                                            data={chart}
+                                            contentInset={{ top: 20, bottom: 20 }}
+                                            svg={{
+                                                fill: 'grey',
+                                                fontSize: 10,
+                                            }}
+                                            numberOfTicks={10}
+                                            formatLabel={(value) => `${value}ºC`}
+                                        />
+                                        <LineChart
+                                            style={{ flex: 1, marginLeft: 16 }}
+                                            data={chart}
+                                            svg={{ stroke: 'rgb(134, 65, 244)' }}
+                                            contentInset={{ top: 20, bottom: 20 }}
+                                        >
+                                            <Grid />
+                                        </LineChart>
+                                    </View>
+
+                                    <View style={{ alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 12 }}>Chart is in a 15 minutes intervals for the past 3 hours.</Text>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                                        <TouchableOpacity
+                                            onPress={() => setModalVisible(!modalVisible)}
+                                            style={{ ...styles.price, width: 100, alignItems: 'center', backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
+                                            <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Close</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
                     </View>
                     {/* <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }} >Base price per session: </Text>
@@ -208,6 +278,38 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 10,
         borderRadius: 20
+    },
+    price: {
+        fontSize: 18,
+        margin: 3,
+        padding: 8,
+        paddingRight: 12,
+        paddingHorizontal: 15,
+        borderWidth: 1,
+        borderColor: '#393E46',
+        color: '#393E46',
+        borderRadius: 50
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 10,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
     }
 })
 
