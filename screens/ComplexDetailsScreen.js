@@ -31,7 +31,6 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
         getDocs(query(collection(db, 'temphistory'), limit(12), orderBy('createdAt', 'desc')))
             .then(querySnapshot => {
                 const temp = []
-                const temp2 = []
                 querySnapshot.forEach((doc) => {
                     temp.push(doc.data().temp)
                 })
