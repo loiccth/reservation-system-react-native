@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Platform, StatusBar, ToastAndroid } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import * as Location from 'expo-location'
-import { getFirestore, collection, getDocs } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore'
 
 const MapScreen = () => {
     const mapRef = React.useRef(null)
@@ -29,7 +29,7 @@ const MapScreen = () => {
             })
         })()
 
-        const querySnapshot = await getDocs(collection(db, 'complexes'))
+        const querySnapshot = await getDocs(query(collection(db, 'complexes'), where('status', '==', 'A')))
         querySnapshot.forEach((doc) => {
             // console.log(doc.id, " => ", doc.data())
             temp.push(doc.data())
