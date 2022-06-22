@@ -39,7 +39,7 @@ const PoolSettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('AboutUs')}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('AddRemoveCategory')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>Add/Remove category</Text>
                         </View>
@@ -49,7 +49,7 @@ const PoolSettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('TermsConditions')}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('UpdateHourSlots')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>Update hour slots</Text>
                         </View>
