@@ -1,6 +1,6 @@
 import React from 'react'
 import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, ToastAndroid } from 'react-native'
 import { Text, TouchableOpacity, Alert } from 'react-native'
 import { Card } from 'react-native-paper'
 import { Ionicons } from '@expo/vector-icons'
@@ -62,8 +62,14 @@ const AdminComplexScreen = ({ tab }) => {
                     })
                     setComplexes(temp)
                 })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    console.log(err)
+                    ToastAndroid.show('Unexpected error.', ToastAndroid.SHORT)
+                })
+
+            ToastAndroid.show('Status change successful.', ToastAndroid.SHORT)
         })
+            .catch(() => ToastAndroid.show('Unexpected error.', ToastAndroid.SHORT))
     }
 
     return (
