@@ -4,57 +4,34 @@ import {
     View,
     Platform,
     StatusBar,
-    Text,
-    ScrollView,
-    TouchableOpacity
 } from 'react-native'
-import UserList from '../components/UserList'
-
+import { InstantSearch } from 'react-instantsearch-native'
+import SearchBox from '../widgets/SearchBox'
+import InfiniteHitsUsers from '../widgets/InfiniteHitsUsers'
+import algoliasearch from "algoliasearch/lite"
+import { useFocusEffect } from '@react-navigation/native'
 
 const UsersScreen = ({ navigation }) => {
-    const [tab, setTab] = React.useState('pending')
+    const [client, setClient] = React.useState(algoliasearch("9Y1QHHRQ1G", "92b4140444283171a403d678c20388d0"))
+
+    useFocusEffect(
+        React.useCallback(() => {
+            setClient(algoliasearch("9Y1QHHRQ1G", "92b4140444283171a403d678c20388d0"))
+        }, [])
+    )
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={{ flexDirection: 'row', backgroundColor: '#3ff', height: 50 }}>
-                <TouchableOpacity
-                    onPress={() => setTab('pending')}
-                    activeOpacity={1}
-                    style={{
-                        ...styles.tab,
-                        backgroundColor: tab === 'pending' ? '#00ADB5' : '#393E46',
-                        borderLeftWidth: 0
-                    }}
-                >
-                    <Text style={{ ...styles.tabText, color: tab === 'pending' ? '#eee' : '#eee' }}>Pending</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => setTab('rejected')}
-                    activeOpacity={1}
-                    style={{
-                        ...styles.tab,
-                        backgroundColor: tab === 'rejected' ? '#00ADB5' : '#393E46'
-                    }}
-                >
-                    <Text style={{ ...styles.tabText, color: tab === 'rejected' ? '#eee' : '#eee' }}>Rejected</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => setTab('approved')}
-                    activeOpacity={1}
-                    style={{
-                        ...styles.tab,
-                        backgroundColor: tab === 'approved' ? '#00ADB5' : '#393E46',
-                        borderRightWidth: 0
-                    }}
-                >
-                    <Text style={{ ...styles.tabText, color: tab === 'approved' ? '#eee' : '#eee' }}>Approved</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View>
-                <UserList tab={tab} navigation={navigation} />
-            </View>
-        </ScrollView>
+        <View style={styles.container}>
+            <InstantSearch
+                appId="9Y1QHHRQ1G"
+                apiKey="92b4140444283171a403d678c20388d0"
+                indexName="members_index"
+                searchClient={client}
+            >
+                <SearchBox />
+                <InfiniteHitsUsers navigation={navigation} />
+            </InstantSearch>
+        </View>
     )
 }
 

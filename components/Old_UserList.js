@@ -30,25 +30,6 @@ const UserList = ({ tab, navigation }) => {
         }, [tab])
     )
 
-    // React.useEffect(async () => {
-    //     let temp = []
-
-    //     try {
-    //         const querySnapshot = await getDocs(query(collection(db, 'users'), where('vaccineValidated', '==', tab)))
-    //         querySnapshot.forEach((doc) => {
-    //             // console.log(doc.id, " => ", doc.data())
-    //             temp.push({
-    //                 ...doc.data(),
-    //                 uid: doc.id
-    //             })
-    //         })
-    //     }
-    //     catch (e) {
-    //         console.log(e)
-    //     }
-    //     setUsers(temp)
-    // }, [tab])
-
     return (
         <View>
             {users.length === 0 &&
