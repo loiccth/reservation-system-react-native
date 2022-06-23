@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, ScrollView, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, ScrollView, Modal, ToastAndroid } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import ComplexModalRoute from '../components/ComplexModalRoute'
 import { Ionicons } from '@expo/vector-icons'
@@ -26,7 +26,6 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
     })
 
     const openModal = () => {
-        console.log('here')
         setModalVisible(true)
         getDocs(query(collection(db, 'temphistory'), limit(12), orderBy('createdAt', 'desc')))
             .then(querySnapshot => {
@@ -61,6 +60,16 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
             .catch(err => console.log(err))
     }, [])
 
+    const checkDisable = () => {
+        console.log(complex.status)
+        if (complex.status != 'A') {
+            ToastAndroid.show('This complex is not accepting reservation right now.', ToastAndroid.SHORT)
+        }
+        else {
+            navigation.navigate('Reservation', { complex })
+        }
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
@@ -73,7 +82,7 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
                 <Image resizeMethod='resize' source={{ uri: complex.images[0] }} style={{ height: 250, width: '100%' }} />
 
                 <View style={styles.actions}>
-                    <TouchableOpacity style={styles.navigate} onPress={() => navigation.navigate('Reservation', { complex })}>
+                    <TouchableOpacity style={styles.navigate} onPress={checkDisable}>
                         <Text style={styles.buttonTxt}>Reserve Slot</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.navigate} onPress={() => setMapModal(true)}>

@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Card } from 'react-native-paper'
 import { Ionicons } from '@expo/vector-icons'
+import Highlight from '../widgets/Highlight'
+import HighlightAdd from '../widgets/HighlightAdd'
 
 const ComplexCard = ({ complex, navigation }) => {
     return (
@@ -11,26 +13,30 @@ const ComplexCard = ({ complex, navigation }) => {
                 <View style={styles.text}>
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.name}>{complex.name}</Text>
+                            <Highlight customStyle={styles.name} attribute="name" hit={complex} />
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
                             <Text>
-                                <Ionicons name='location-outline' size={20} style={{ color: '#00ADB5' }} /> {complex.location.split(', ')[0]}
+                                <Ionicons name='location-outline' size={20} style={{ color: '#00ADB5' }} /> <HighlightAdd customStyle={{}} attribute="location" hit={complex} />
                             </Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text>Category: </Text>
-                        <Text style={{ padding: 3, paddingRight: 7, paddingHorizontal: 10, borderWidth: 1, borderColor: '#393E46', color: '#393E46', borderRadius: 50 }}>{complex.category}</Text>
+                        <View style={{ ...styles.circleThingy, paddingRight: 10 }}>
+                            <Highlight customStyle={styles.highlightText} attribute="category" hit={complex} />
+                        </View>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
                         <Text>Depth: </Text>
-                        <Text style={{ padding: 3, paddingRight: 7, paddingHorizontal: 10, borderWidth: 1, borderColor: '#393E46', color: '#393E46', borderRadius: 50 }}>{complex.depth}M</Text>
+                        <View style={{ ...styles.circleThingy, paddingRight: 10 }}>
+                            <Text style={styles.highlightText}>{complex.depth}M</Text>
+                        </View>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text><Ionicons name='pricetags-outline' size={20} style={{ color: '#00ADB5' }} /> </Text>
                         {complex.tags.map(tag =>
-                            <Text key={tag} style={{ margin: 3, padding: 3, paddingRight: 7, paddingHorizontal: 10, borderWidth: 1, borderColor: '#393E46', color: '#393E46', borderRadius: 50 }}>{tag}</Text>
+                            <Text key={tag} style={{ margin: 3, ...styles.circleThingy }}>{tag}</Text>
                         )}
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -60,6 +66,19 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginBottom: 5,
         marginTop: 5
+    },
+    highlightText: {
+        borderColor: '#393E46',
+        color: '#393E46',
+    },
+    circleThingy: {
+        padding: 3,
+        paddingHorizontal: 10,
+        paddingRight: 7,
+        borderWidth: 1,
+        borderColor: '#393E46',
+        color: '#393E46',
+        borderRadius: 50
     }
 })
 
