@@ -59,7 +59,7 @@ const PoolSettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('TermsConditions')}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('Report')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>End of day report</Text>
                         </View>

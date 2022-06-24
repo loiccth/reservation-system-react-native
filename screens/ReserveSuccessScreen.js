@@ -14,6 +14,7 @@ const ReserveSuccessScreen = ({ route, navigation }) => {
         addDoc(collection(db, 'reservations'),
             {
                 ...reservationDetails,
+                date: Date.parse(reservationDetails.date),
                 paid: true,
                 paymentDetails: {
                     date: new Date().toISOString()

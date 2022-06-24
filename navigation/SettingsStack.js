@@ -14,6 +14,7 @@ import AddScreen from '../screens/AddScreen'
 import EnableDisablePoolScreen from '../screens/EnableDisablePoolScreen'
 import AddRemoveCategoryScreen from '../screens/AddRemoveCategoryScreen'
 import UpdateHourSlotsScreen from '../screens/UpdateHourSlotsScreen'
+import EndOfDayReportScreen from '../screens/EndOfDayReportScreen'
 
 const Stack = createStackNavigator()
 
@@ -35,6 +36,7 @@ export default function SettingsStack() {
             <Stack.Screen name='EnableDisablePool' component={EnableDisablePoolScreen} />
             <Stack.Screen name='AddRemoveCategory' component={AddRemoveCategoryScreen} />
             <Stack.Screen name='UpdateHourSlots' component={UpdateHourSlotsScreen} />
+            <Stack.Screen name='Report' component={EndOfDayReportScreen} />
             <Stack.Screen name='AboutUs' component={AboutUs} />
             <Stack.Screen name='TermsConditions' component={TermsConditionsScreen} />
         </Stack.Navigator>

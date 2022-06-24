@@ -33,7 +33,7 @@ const PaymentScreen = ({ route, navigation }) => {
     React.useEffect(() => {
         if (add) {
             addDoc(collection(db, 'reservations'),
-                { ...reservationDetails, paid: false, paymentDetails: null, user: user.email, status: 'A', complex })
+                { ...reservationDetails, date: Date.parse(reservationDetails.date), paid: false, paymentDetails: null, user: user.email, status: 'A', complex })
                 .then(result => {
                     console.log(`reservation saved => ${result._key.path.segments[1]}`)
                     setReservationId(result._key.path.segments[1])
