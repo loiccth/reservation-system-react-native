@@ -11,6 +11,8 @@ import AboutUs from '../screens/AboutUs'
 import TermsConditionsScreen from '../screens/TermsConditionsScreen'
 import PoolSettingsScreen from '../screens/PoolSettingsScreen'
 import AddScreen from '../screens/AddScreen'
+import UpdatePoolScreen from '../screens/UpdatePoolScreen'
+import UpdatePoolDetails from '../screens/UpdatePoolDetails'
 import EnableDisablePoolScreen from '../screens/EnableDisablePoolScreen'
 import AddRemoveCategoryScreen from '../screens/AddRemoveCategoryScreen'
 import UpdateHourSlotsScreen from '../screens/UpdateHourSlotsScreen'
@@ -33,6 +35,8 @@ export default function SettingsStack() {
             <Stack.Screen name='MembershipPaymentSuccess' component={MembershipPaymentSuccessScreen} />
             <Stack.Screen name='PoolSettings' component={PoolSettingsScreen} />
             <Stack.Screen name='AddPool' component={AddScreen} />
+            <Stack.Screen name='UpdatePool' component={UpdatePoolScreen} />
+            <Stack.Screen name='UpdatePoolDetails' component={UpdatePoolDetails} />
             <Stack.Screen name='EnableDisablePool' component={EnableDisablePoolScreen} />
             <Stack.Screen name='AddRemoveCategory' component={AddRemoveCategoryScreen} />
             <Stack.Screen name='UpdateHourSlots' component={UpdateHourSlotsScreen} />

@@ -29,9 +29,9 @@ const PoolSettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </Card>
                 <Card style={styles.tabContainer} elevation={10}>
-                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('EnableDisablePool')}>
+                    <TouchableOpacity style={styles.test} onPress={() => navigation.navigate('UpdatePool')}>
                         <View style={{ flex: 4, justifyContent: 'center', padding: 10 }}>
-                            <Text style={{ fontSize: 16, fontWeight: '700' }}>Update/Remove Pool</Text>
+                            <Text style={{ fontSize: 16, fontWeight: '700' }}>Update Pool</Text>
                         </View>
                         <View style={{ flex: 1, alignSelf: 'flex-end', alignItems: 'flex-end', padding: 5 }}>
                             <Ionicons name='arrow-forward-circle-outline' size={30} style={{ color: '#00ADB5' }} />
