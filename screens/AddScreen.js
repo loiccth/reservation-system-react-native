@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, TextInput, ToastAndroid, Image, Platform, StatusBar, ScrollView, Switch } from 'react-native'
 import * as yup from 'yup'
 import * as ImagePicker from 'expo-image-picker'
-import { getFirestore, doc, setDoc, collection, addDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, collection, addDoc } from 'firebase/firestore'
 import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
@@ -38,8 +38,10 @@ let schema = yup.object().shape({
 const AddScreen = ({ navigation }) => {
     const db = getFirestore()
     const storage = getStorage()
+    const [categories, setCategories] = React.useState([])
     const [press, setPress] = React.useState(false)
     const [vaccine, setVaccine] = React.useState(true)
+    const mapRef = React.useRef(null)
     const [data, setData] = React.useState({
         name: '',
         location: '',
@@ -77,6 +79,18 @@ const AddScreen = ({ navigation }) => {
         }
     ])
 
+    React.useEffect(() => {
+        getDoc(doc(db, 'settings', 'filters'))
+            .then(res => {
+                if (res.exists()) {
+                    setCategories(res.data().data)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
+
     const handlePackage = (i, field, text) => {
         let temp = [...packages]
 
@@ -95,8 +109,6 @@ const AddScreen = ({ navigation }) => {
 
         setPackages(temp)
     }
-
-    const mapRef = React.useRef(null)
 
     const addComplex = () => {
         setPress(true)
@@ -159,8 +171,6 @@ const AddScreen = ({ navigation }) => {
     }
 
     async function uploadImageAsync(uri, title) {
-        // Why are we using XMLHttpRequest? See:
-        // https://github.com/expo/expo/issues/2402#issuecomment-443726662
         const blob = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
@@ -177,7 +187,6 @@ const AddScreen = ({ navigation }) => {
         const fileRef = ref(storage, title)
         const result = await uploadBytesResumable(fileRef, blob)
 
-        // We're done with the blob, close and release it
         blob.close()
 
         return await getDownloadURL(fileRef)
@@ -195,22 +204,6 @@ const AddScreen = ({ navigation }) => {
             setData({ ...data, uri: result.uri })
         }
     }
-
-    // const openCamera = async () => {
-    //     const permissionResult = await ImagePicker.requestCameraPermissionsAsync()
-
-    //     if (permissionResult.granted === false) {
-    //         alert("You've refused to allow this appp to access your camera!")
-    //         return
-    //     }
-
-    //     const result = await ImagePicker.launchCameraAsync()
-
-    //     if (!result.cancelled) {
-    //         // console.log(result.uri)
-    //         setData({ ...data, uri: result.uri })
-    //     }
-    // }
 
     const animateMap = (lat, long) => {
         mapRef.current.animateToRegion({
@@ -304,9 +297,12 @@ const AddScreen = ({ navigation }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setData({ ...data, category: itemValue })
                             }>
-                            <Picker.Item label='Kids' value='Kids' />
+                            {categories.map(category =>
+                                <Picker.Item key={category} label={category} value={category} />
+                            )}
+                            {/* <Picker.Item label='Kids' value='Kids' />
                             <Picker.Item label='Teenager' value='Teenager' />
-                            <Picker.Item label='Adult' value='Adult' />
+                            <Picker.Item label='Adult' value='Adult' /> */}
                         </Picker>
                     </View>
                 </View>

@@ -55,7 +55,7 @@ const EndOfDayReportScreen = ({ navigation }) => {
                 let children = 0
                 let gross = 0
 
-                getDocs(query(collection(db, 'reservations'), where('status', '==', 'CO'), where('date', '<', epoch.end), where('date', '>=', epoch.start)))
+                getDocs(query(collection(db, 'reservations'), where('status', '==', 'Completed'), where('date', '<', epoch.end), where('date', '>=', epoch.start)))
                     .then(querySnapshot => {
                         querySnapshot.forEach((doc) => {
                             // console.log(doc.id, " => ", doc.data())

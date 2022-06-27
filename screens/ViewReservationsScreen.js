@@ -28,7 +28,7 @@ const ViewReservationsScreen = ({ navigation }) => {
                 })
 
                 setActive(temp.filter(reser => reser.status === 'Active'))
-                setCompleted(temp.filter(reser => reser.status === 'Cancelled' || reser.status === 'CO' || reser.status === 'Expired'))
+                setCompleted(temp.filter(reser => reser.status === 'Cancelled' || reser.status === 'Completed' || reser.status === 'Expired'))
             })()
         }, [])
     )

@@ -38,7 +38,7 @@ const ScannedReservationScreen = ({ route, navigation }) => {
 
     const handleConfirm = () => {
         updateDoc(doc(db, 'reservations', reservationId), {
-            status: 'CO',
+            status: 'Completed',
             completeDate: new Date().toISOString()
         }).then(() => navigation.navigate('Camera'))
     }
