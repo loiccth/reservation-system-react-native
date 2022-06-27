@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ToastAndroid, ScrollView } from 'react-native'
 import { getFirestore, collection, getDocs, query, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
-import isInThePast from '../utils/pastCheck'
 import LoadingReservation from '../components/LoadingReservation'
 import { Ionicons } from '@expo/vector-icons'
 import Reservation404 from '../components/Reservation404'
@@ -50,72 +49,68 @@ const ScannedReservationScreen = ({ route, navigation }) => {
             </View>
             {loading ? <LoadingReservation /> :
                 !reservation ? <Reservation404 navigation={navigation} msg='Reservation not found.' /> :
-                    // TODO: do not prevent this cuz of hourslot
-                    isInThePast(new Date(reservation.date)) ?
-                        <Reservation404 navigation={navigation} msg='Reservation expired.' /> :
-                        reservation.status !== 'Active' ?
-                            <Reservation404 navigation={navigation} msg='Reservation cancelled/expired.' /> :
-                            <>
-                                <View style={styles.reservationInfo}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View style={{ flex: 1, alignItems: 'center' }}>
-                                            <View><Text style={{ fontSize: 16, fontWeight: '700' }}>Field</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>User</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Pool name</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Location</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Reservation date</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Slot time</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Package selected</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Adult price</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Kid Price</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>No. of adults</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>No. of kids</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Total price</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Payment completed</Text></View>
-                                            {reservation.paid &&
-                                                <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Payment date</Text></View>
-                                            }
-                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Status</Text></View>
-                                        </View>
-                                        <View style={{ flex: 1 }}>
-                                            <View style={{}}><Text style={{ fontSize: 16, fontWeight: '700' }}>Value</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.user}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.complex.name}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.complex.location}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{new Date(reservation.date).toLocaleDateString()}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.hourSlotDetail}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.packageDetails.name}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>Rs {reservation.packageDetails.price}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>Rs {reservation.packageDetails.kidPrice}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.people.adult}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>{reservation.people.children}</Text></View>
-                                            <View style={{ marginVertical: 10 }}><Text>Rs {reservation.packageDetails.price * reservation.people.adult + reservation.packageDetails.kidPrice * reservation.people.children}</Text></View>
-                                            <View style={{ marginVertical: 6 }}><Text>{reservation.paid ? <Ionicons name='checkmark-circle-outline' size={25} style={{ color: '#2ed62b' }} /> :
-                                                <Ionicons name='alert-circle-outline' size={25} style={{ color: '#d62b2b' }} />}</Text></View>
-                                            {reservation.paid &&
-                                                <View style={{ marginVertical: 10 }}><Text>{new Date(reservation.paymentDetails.date).toLocaleString()}</Text></View>
-                                            }
-                                            <View style={{ marginVertical: 10 }}>
-                                                {/* TODO: Fix this */}
-                                                <Text>{reservation.status === 'Active' ? 'Active' : reservation.status === 'Cancelled' ? 'Cancelled' : 'Completed/Expired'}</Text>
-                                            </View>
+                    reservation.status !== 'Active' ?
+                        <Reservation404 navigation={navigation} msg='Reservation cancelled/expired.' /> :
+                        <>
+                            <View style={styles.reservationInfo}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1, alignItems: 'center' }}>
+                                        <View><Text style={{ fontSize: 16, fontWeight: '700' }}>Field</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>User</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Pool name</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Location</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Reservation date</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Slot time</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Package selected</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Adult price</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Kid Price</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>No. of adults</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>No. of kids</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Total price</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Payment completed</Text></View>
+                                        {reservation.paid &&
+                                            <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Payment date</Text></View>
+                                        }
+                                        <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Status</Text></View>
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <View style={{}}><Text style={{ fontSize: 16, fontWeight: '700' }}>Value</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.user}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.complex.name}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.complex.location}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{new Date(reservation.date).toLocaleDateString()}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.hourSlotDetail}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.packageDetails.name}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>Rs {reservation.packageDetails.price}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>Rs {reservation.packageDetails.kidPrice}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.people.adult}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>{reservation.people.children}</Text></View>
+                                        <View style={{ marginVertical: 10 }}><Text>Rs {reservation.packageDetails.price * reservation.people.adult + reservation.packageDetails.kidPrice * reservation.people.children}</Text></View>
+                                        <View style={{ marginVertical: 6 }}><Text>{reservation.paid ? <Ionicons name='checkmark-circle-outline' size={25} style={{ color: '#2ed62b' }} /> :
+                                            <Ionicons name='alert-circle-outline' size={25} style={{ color: '#d62b2b' }} />}</Text></View>
+                                        {reservation.paid &&
+                                            <View style={{ marginVertical: 10 }}><Text>{new Date(reservation.paymentDetails.date).toLocaleString()}</Text></View>
+                                        }
+                                        <View style={{ marginVertical: 10 }}>
+                                            <Text>{reservation.status}</Text>
                                         </View>
                                     </View>
                                 </View>
+                            </View>
 
-                                {!reservation.paid &&
-                                    <View style={{ alignItems: 'center' }}>
-                                        <Text style={{ color: '#d62b2b', fontWeight: '700' }}>Warning: Reservation not paid.</Text>
-                                    </View>
-                                }
-                                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                                    <TouchableOpacity
-                                        onPress={createTwoButtonAlert}
-                                        style={{ ...styles.price, backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
-                                        <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Validate reservation</Text>
-                                    </TouchableOpacity>
+                            {!reservation.paid &&
+                                <View style={{ alignItems: 'center' }}>
+                                    <Text style={{ color: '#d62b2b', fontWeight: '700' }}>Warning: Reservation not paid.</Text>
                                 </View>
-                            </>
+                            }
+                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                                <TouchableOpacity
+                                    onPress={createTwoButtonAlert}
+                                    style={{ ...styles.price, backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
+                                    <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Validate reservation</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </>
             }
         </ScrollView>
     )
