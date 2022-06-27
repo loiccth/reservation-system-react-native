@@ -79,9 +79,6 @@ export default function App() {
                                                 updateDoc(doc(db, 'memberships', user1.uid), {
                                                     endDate: newEndDate
                                                 })
-
-                                                // TODO: send post request for stripe
-                                                // TODO: for loop and check number of months
                                             }
                                             else {
                                                 setMembership()

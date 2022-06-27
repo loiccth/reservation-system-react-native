@@ -32,8 +32,6 @@ const MembershipScreen = ({ navigation }) => {
                                     updateDoc(doc(db, 'memberships', user.uid), {
                                         endDate: newEndDate
                                     })
-
-                                    // TODO: send post request for stripe
                                 }
                                 else {
                                     setMembership()

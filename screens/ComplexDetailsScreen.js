@@ -40,7 +40,6 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
             .catch(err => console.log(err))
     }
 
-    // TODO: Fix notification
     const sendNotification = () => {
         Notifications.scheduleNotificationAsync({
             content: {
