@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, 
 import { getFirestore, collection, addDoc, query, where, doc, updateDoc } from 'firebase/firestore'
 import illustration from '../assets/undraw_Profile_re_4a55.png'
 import * as yup from 'yup'
+import { v4 as uuidv4 } from 'uuid'
 import { UserContext } from '../contexts/UserContext'
 
 let schema = yup.object().shape({
@@ -15,8 +16,10 @@ const AccountScreen = ({ navigation }) => {
     const db = getFirestore()
     const [user, setUser] = React.useState(React.useContext(UserContext).user)
     const setContextUser = React.useContext(UserContext).setUser
-    const ref_input1 = React.useRef()
+    const [changedImg, setChangeImg] = React.useState(false)
+    const [uri, setUri] = React.useState()
     const ref_input2 = React.useRef()
+    const ref_input1 = React.useRef()
 
     const updateUser = (e, data) => {
         if (e === 'firstname') {
@@ -45,11 +48,19 @@ const AccountScreen = ({ navigation }) => {
             lastname: user.lastname,
             phone: user.phone
         })
-            .then(() => {
+            .then(async () => {
+                let link = ''
+
+                if (changedImg) {
+                    link = await uploadImageAsync(uri, uuidv4())
+                }
+
                 updateDoc(doc(db, 'users', user.uid), {
                     firstname: user.firstname,
                     lastname: user.lastname,
-                    phone: user.phone
+                    phone: user.phone,
+                    vaccinationCard: changedImg ? link : user.vaccinationCard
+
                 }).then(() => {
                     ToastAndroid.show('Profile successfully updated.', ToastAndroid.SHORT)
 
@@ -61,6 +72,41 @@ const AccountScreen = ({ navigation }) => {
                 console.log(err)
                 ToastAndroid.show(err.message + '', ToastAndroid.SHORT)
             })
+    }
+
+    async function uploadImageAsync(uri, title) {
+        const blob = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest()
+            xhr.onload = function () {
+                resolve(xhr.response)
+            }
+            xhr.onerror = function (e) {
+                reject(new TypeError('Network request failed'))
+            }
+            xhr.responseType = 'blob'
+            xhr.open('GET', uri, true)
+            xhr.send(null)
+        })
+
+        const fileRef = ref(storage, title)
+        const result = await uploadBytesResumable(fileRef, blob)
+
+        blob.close()
+
+        return await getDownloadURL(fileRef)
+    }
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            quality: 1,
+        })
+
+        if (!result.cancelled) {
+            setChangeImg(true)
+            setUri(result.uri)
+        }
     }
 
     return (
@@ -130,6 +176,35 @@ const AccountScreen = ({ navigation }) => {
                         ref={ref_input2}
                     />
                 </View>
+
+                <View style={{ marginTop: 20 }}>
+                    <View width={'100%'} >
+                        <Text style={styles.label}>Vaccination status</Text>
+                    </View>
+                    <TextInput style={{ ...styles.inputText, backgroundColor: '#d4d4d4', textTransform: 'capitalize' }}
+                        placeholderTextColor='#c4cfce'
+                        value={user.vaccineValidated}
+                        selectionColor={'#919191'}
+                        editable={false}
+                    />
+                </View>
+
+                <View style={{ marginTop: 20 }}>
+                    <View width={'100%'} >
+                        <Text style={styles.label}>Vaccination card</Text>
+                    </View>
+                    <Image resizeMode='contain' source={{ uri: changedImg ? uri : user.vaccinationCard }} style={{ height: 250, marginTop: 10 }} />
+                </View>
+
+                {user.vaccineValidated !== 'approved' &&
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity
+                            onPress={pickImage}
+                            style={{ ...styles.price, width: 140, alignItems: 'center', backgroundColor: '#393E46', borderColor: '#393E46' }}>
+                            <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Browse image</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <TouchableOpacity
