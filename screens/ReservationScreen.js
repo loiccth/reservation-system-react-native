@@ -171,8 +171,8 @@ const ReservationScreen = ({ route, navigation }) => {
                 <View style={styles.block}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={styles.headers}>Choose your date:</Text>
-                        <TouchableOpacity onPress={showDatepicker} style={styles.hours}>
-                            <Text >Choose date</Text>
+                        <TouchableOpacity onPress={showDatepicker} style={{ ...styles.hours, backgroundColor: '#00ADB5' }}>
+                            <Text style={{ color: '#eee', fontWeight: '700' }}>Choose date</Text>
                         </TouchableOpacity>
                     </View>
                     {show && (
@@ -198,9 +198,10 @@ const ReservationScreen = ({ route, navigation }) => {
                             {splitSlot.map((slot, index2) =>
                                 <TouchableOpacity key={index2} onPress={() => clickHour((index1 * 3) + index2, slot)} style={{
                                     ...styles.hours,
-                                    backgroundColor: reservationDetails.hourSlot === (index1 * 3) + index2 ? '#00ADB5' : '#fff'
+                                    backgroundColor: reservationDetails.hourSlot === (index1 * 3) + index2 ? '#393E46' : '#00ADB5',
+                                    borderColor: reservationDetails.hourSlot === (index1 * 3) + index2 ? '#393E46' : '#00ADB5'
                                 }}>
-                                    <Text style={{ color: reservationDetails.hourSlot === (index1 * 3) + index2 ? '#EEE' : '#000' }}>{slot}</Text>
+                                    <Text style={{ color: '#EEE', fontWeight: '700' }}>{slot}</Text>
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -215,9 +216,10 @@ const ReservationScreen = ({ route, navigation }) => {
                             {splitPackage.map((pkg, index2) =>
                                 <TouchableOpacity key={index2} onPress={() => clickPackage((index1 * 3) + index2, pkg)} style={{
                                     ...styles.hours,
-                                    backgroundColor: reservationDetails.package === (index1 * 3) + index2 ? '#00ADB5' : '#fff'
+                                    backgroundColor: reservationDetails.package === (index1 * 3) + index2 ? '#393E46' : '#00ADB5',
+                                    borderColor: reservationDetails.package === (index1 * 3) + index2 ? '#393E46' : '#00ADB5'
                                 }}>
-                                    <Text style={{ color: reservationDetails.package === (index1 * 3) + index2 ? '#EEE' : '#000' }}>{pkg.name}</Text>
+                                    <Text style={{ color: '#EEE', fontWeight: '700' }}>{pkg.name}</Text>
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -271,13 +273,13 @@ const ReservationScreen = ({ route, navigation }) => {
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                         <TouchableOpacity disabled={price === 0}
                             onPress={() => navigation.navigate('ReservationReview', { complex, reservationDetails: { ...reservationDetails, date: reservationDetails.date.toISOString() }, price, discount })}
-                            style={{ ...styles.price, backgroundColor: price === 0 ? '#8f8f8f' : '#00ADB5', borderColor: price === 0 ? '#8f8f8f' : '#00ADB5' }}>
+                            style={{ ...styles.price, width: 160, alignItems: 'center', backgroundColor: price === 0 ? '#8f8f8f' : '#00ADB5', borderColor: price === 0 ? '#8f8f8f' : '#00ADB5' }}>
                             <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Proceed to review</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </ScrollView >
     )
 }
 
