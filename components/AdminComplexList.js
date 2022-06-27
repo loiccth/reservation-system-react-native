@@ -11,7 +11,7 @@ const AdminComplexScreen = ({ tab }) => {
     const db = getFirestore()
     const [complexes, setComplexes] = React.useState([])
 
-    const status = tab === 'enabled' ? 'A' : 'D'
+    const status = tab === 'enabled' ? 'enable' : 'disable'
 
     useFocusEffect(
         React.useCallback(() => {
@@ -35,7 +35,7 @@ const AdminComplexScreen = ({ tab }) => {
     )
 
     const createTwoButtonAlert = (id) => {
-        Alert.alert('Status change', `Are you sure you want to ${status === 'A' ? 'disable' : 'enable'} this complex?`, [
+        Alert.alert('Status change', `Are you sure you want to ${status === 'enable' ? 'disable' : 'enable'} this complex?`, [
             {
                 text: 'Cancel',
                 onPress: () => { },
@@ -47,7 +47,7 @@ const AdminComplexScreen = ({ tab }) => {
 
     const update = (id) => {
         updateDoc(doc(db, 'complexes', id), {
-            status: status === 'A' ? 'D' : 'A'
+            status: status === 'enable' ? 'disable' : 'enable'
         }).then(() => {
             let temp = []
 

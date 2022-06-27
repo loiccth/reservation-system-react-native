@@ -44,6 +44,10 @@ const ComplexCard = ({ complex, navigation }) => {
                         <Text style={{ marginTop: 1 }}>{complex.vaccinationRequired ? <Ionicons name='checkmark-circle-outline' size={25} style={{ color: '#2ed62b' }} /> :
                             <Ionicons name='alert-circle-outline' size={25} style={{ color: '#d62b2b' }} />}</Text>
                     </View>
+                    {complex.status === 'disable' &&
+                        <View style={{ alignItems: 'center' }}>
+                            <Text style={{ color: 'red', fontWeight: '700' }}>Temporarily disabled</Text>
+                        </View>}
                 </View>
             </TouchableOpacity>
         </Card>

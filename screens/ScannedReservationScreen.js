@@ -50,9 +50,10 @@ const ScannedReservationScreen = ({ route, navigation }) => {
             </View>
             {loading ? <LoadingReservation /> :
                 !reservation ? <Reservation404 navigation={navigation} msg='Reservation not found.' /> :
+                    // TODO: do not prevent this cuz of hourslot
                     isInThePast(new Date(reservation.date)) ?
                         <Reservation404 navigation={navigation} msg='Reservation expired.' /> :
-                        reservation.status !== 'A' ?
+                        reservation.status !== 'Active' ?
                             <Reservation404 navigation={navigation} msg='Reservation cancelled/expired.' /> :
                             <>
                                 <View style={styles.reservationInfo}>
@@ -95,7 +96,8 @@ const ScannedReservationScreen = ({ route, navigation }) => {
                                                 <View style={{ marginVertical: 10 }}><Text>{new Date(reservation.paymentDetails.date).toLocaleString()}</Text></View>
                                             }
                                             <View style={{ marginVertical: 10 }}>
-                                                <Text>{reservation.status === 'A' ? 'Active' : reservation.status === 'CA' ? 'Cancelled' : 'Completed/Expired'}</Text>
+                                                {/* TODO: Fix this */}
+                                                <Text>{reservation.status === 'Active' ? 'Active' : reservation.status === 'Cancelled' ? 'Cancelled' : 'Completed/Expired'}</Text>
                                             </View>
                                         </View>
                                     </View>

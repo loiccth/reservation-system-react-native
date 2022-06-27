@@ -47,11 +47,19 @@ const SignInScreen = ({ navigation }) => {
                         })
                     })
                     .catch(err => {
+                        setData({
+                            ...data,
+                            password: ''
+                        })
                         ToastAndroid.show('Incorrect email/password.', ToastAndroid.SHORT)
                     })
                     .finally(() => setProcess(false))
             })
             .catch(err => {
+                setData({
+                    ...data,
+                    password: ''
+                })
                 ToastAndroid.show(err.message, ToastAndroid.SHORT)
             })
             .finally(() => setProcess(false))

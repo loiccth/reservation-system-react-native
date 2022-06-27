@@ -30,14 +30,14 @@ const ViewUserReservationDetailsScreen = ({ route, navigation }) => {
                             <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Payment date</Text></View>
                         }
                         <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Status</Text></View>
-                        {reservationDetails.status === 'CA' &&
+                        {reservationDetails.status === 'Cancelled' &&
                             <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Cancelled date</Text></View>
                         }
                     </View>
                     <View style={{ flex: 1 }}>
                         <View style={{}}><Text style={{ fontSize: 16, fontWeight: '700' }}>Value</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{complex.name}</Text></View>
-                        <View style={{ marginVertical: 10 }}><Text>{complex.location}</Text></View>
+                        <View style={{ marginVertical: 10 }}><Text>{complex.location.split(', ')[0]}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.date).toLocaleDateString()}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.hourSlotDetail}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.packageDetails.name}</Text></View>
@@ -52,9 +52,9 @@ const ViewUserReservationDetailsScreen = ({ route, navigation }) => {
                             <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.paymentDetails.date).toLocaleString()}</Text></View>
                         }
                         <View style={{ marginVertical: 10 }}>
-                            <Text>{reservationDetails.status === 'A' ? 'Active' : reservationDetails.status === 'CA' ? 'Cancelled' : 'Completed/Expired'}</Text>
+                            <Text>{reservationDetails.status}</Text>
                         </View>
-                        {reservationDetails.status === 'CA' &&
+                        {reservationDetails.status === 'Cancelled' &&
                             <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.cancelDate).toLocaleString()}</Text></View>
                         }
                     </View>

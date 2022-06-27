@@ -14,24 +14,6 @@ const ViewReservationsScreen = ({ navigation }) => {
     const user = React.useContext(UserContext).user
     const db = getFirestore()
 
-    // console.log(active)
-    // console.log(completed)
-
-    // React.useEffect(async () => {
-    //     const temp = []
-
-    //     const complexesRef = collection(db, 'reservations')
-    //     const q = query(complexesRef, where('user', '==', user.email))
-
-    //     const querySnapshot = await getDocs(q)
-    //     querySnapshot.forEach((doc) => {
-    //         temp.push({ ...doc.data(), id: doc.id })
-    //     })
-
-    //     setActive(temp.filter(reser => reser.status === 'A'))
-    //     setCompleted(temp.filter(reser => reser.status === 'C'))
-    // }, [])
-
     useFocusEffect(
         React.useCallback(() => {
             (async () => {
@@ -45,8 +27,8 @@ const ViewReservationsScreen = ({ navigation }) => {
                     temp.push({ ...doc.data(), id: doc.id })
                 })
 
-                setActive(temp.filter(reser => reser.status === 'A'))
-                setCompleted(temp.filter(reser => reser.status === 'CA' || reser.status === 'CO'))
+                setActive(temp.filter(reser => reser.status === 'Active'))
+                setCompleted(temp.filter(reser => reser.status === 'Cancelled' || reser.status === 'CO' || reser.status === 'Expired'))
             })()
         }, [])
     )
@@ -89,7 +71,8 @@ const ViewReservationsScreen = ({ navigation }) => {
                                     onPress={() => navigation.navigate('DetailsReservation', {
                                         complex: reser.complex,
                                         reservationDetails: reser,
-                                        price: (reser.packageDetails.price * reser.people.adult) + (reser.packageDetails.kidPrice * reser.people.children)
+                                        price: (reser.packageDetails.price * reser.people.adult) + (reser.packageDetails.kidPrice * reser.people.children),
+                                        discount: reser.discount
                                     })}>
                                     <View style={styles.text}>
                                         <View style={{ flexDirection: 'row' }}>
@@ -132,7 +115,8 @@ const ViewReservationsScreen = ({ navigation }) => {
                                     onPress={() => navigation.navigate('DetailsReservation', {
                                         complex: reser.complex,
                                         reservationDetails: reser,
-                                        price: (reser.packageDetails.price * reser.people.adult) + (reser.packageDetails.kidPrice * reser.people.children)
+                                        price: (reser.packageDetails.price * reser.people.adult) + (reser.packageDetails.kidPrice * reser.people.children),
+                                        discount: reser.discount
                                     })}>
                                     <View style={styles.text}>
                                         <View style={{ flexDirection: 'row' }}>
@@ -160,7 +144,7 @@ const ViewReservationsScreen = ({ navigation }) => {
                                             <Text style={{ marginTop: 1 }}>{reser.paid ? <Ionicons name='checkmark-circle-outline' size={25} style={{ color: '#2ed62b' }} /> :
                                                 <Ionicons name='alert-circle-outline' size={25} style={{ color: '#d62b2b' }} />}</Text>
                                         </View>
-                                        <Text>{reser.status === 'CA' ? 'Reservation cancelled' : 'Reservation expired'}</Text>
+                                        <Text>{reser.status}</Text>
                                     </View>
                                 </TouchableOpacity>
                             </Card>

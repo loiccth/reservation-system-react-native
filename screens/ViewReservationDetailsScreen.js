@@ -5,14 +5,14 @@ import { Ionicons } from '@expo/vector-icons'
 import QRCode from 'react-native-qrcode-svg'
 
 const ViewReservationDetailsScreen = ({ route, navigation }) => {
-    const { complex, reservationDetails, price } = route.params
+    const { complex, reservationDetails, price, discount } = route.params
     const [viewQR, setViewQR] = React.useState(false)
     const db = getFirestore()
 
     const handleCancel = () => {
         console.log(`cancel reservation => ${reservationDetails.id}`)
         updateDoc(doc(db, 'reservations', reservationDetails.id), {
-            status: 'CA',
+            status: 'Cancelled',
             cancelDate: new Date().toISOString()
         }).then(() => navigation.navigate('Main'))
     }
@@ -53,14 +53,14 @@ const ViewReservationDetailsScreen = ({ route, navigation }) => {
                             <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Payment date</Text></View>
                         }
                         <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Status</Text></View>
-                        {reservationDetails.status === 'CA' &&
+                        {reservationDetails.status === 'Cancelled' &&
                             <View style={{ marginVertical: 10 }}><Text style={{ fontWeight: '700' }}>Cancelled date</Text></View>
                         }
                     </View>
                     <View style={{ flex: 1 }}>
                         <View style={{}}><Text style={{ fontSize: 16, fontWeight: '700' }}>Value</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{complex.name}</Text></View>
-                        <View style={{ marginVertical: 10 }}><Text>{complex.location}</Text></View>
+                        <View style={{ marginVertical: 10 }}><Text>{complex.location.split(', ')[0]}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.date).toLocaleDateString()}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.hourSlotDetail}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.packageDetails.name}</Text></View>
@@ -68,23 +68,23 @@ const ViewReservationDetailsScreen = ({ route, navigation }) => {
                         <View style={{ marginVertical: 10 }}><Text>Rs {reservationDetails.packageDetails.kidPrice}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.people.adult}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.people.children}</Text></View>
-                        <View style={{ marginVertical: 10 }}><Text>Rs {price}</Text></View>
+                        <View style={{ marginVertical: 10 }}><Text>Rs {price - discount}</Text></View>
                         <View style={{ marginVertical: 6 }}><Text>{reservationDetails.paid ? <Ionicons name='checkmark-circle-outline' size={25} style={{ color: '#2ed62b' }} /> :
                             <Ionicons name='alert-circle-outline' size={25} style={{ color: '#d62b2b' }} />}</Text></View>
                         {reservationDetails.paid &&
                             <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.paymentDetails.date).toLocaleString()}</Text></View>
                         }
                         <View style={{ marginVertical: 10 }}>
-                            <Text>{reservationDetails.status === 'A' ? 'Active' : reservationDetails.status === 'CA' ? 'Cancelled' : 'Completed/Expired'}</Text>
+                            <Text>{reservationDetails.status}</Text>
                         </View>
-                        {reservationDetails.status === 'CA' &&
+                        {reservationDetails.status === 'Cancelled' &&
                             <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.cancelDate).toLocaleString()}</Text></View>
                         }
                     </View>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                    {reservationDetails.status === 'A' &&
+                    {reservationDetails.status === 'Active' &&
                         <>
                             <TouchableOpacity
                                 onPress={createTwoButtonAlert}
@@ -93,7 +93,7 @@ const ViewReservationDetailsScreen = ({ route, navigation }) => {
                             </TouchableOpacity>
                             {!reservationDetails.paid &&
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('Payment', { add: false, complex, reservationDetails, price })}
+                                    onPress={() => navigation.navigate('Payment', { add: false, complex, reservationDetails, price, discount })}
                                     style={{ ...styles.price, width: 160, alignItems: 'center', backgroundColor: '#00ADB5', borderColor: '#00ADB5' }}>
                                     <Text style={{ color: '#EEEEEE', fontWeight: '700' }}>Pay reservation</Text>
                                 </TouchableOpacity>

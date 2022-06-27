@@ -5,7 +5,6 @@ import ViewReservationScreen from '../screens/ViewReservationsScreen'
 import ViewReservationDetailsScreen from '../screens/ViewReservationDetailsScreen'
 import PaymentScreen from '../screens/PaymentScreen'
 import PaymentSuccessScreen from '../screens/PaymentSuccessScreen'
-import ReserveSuccessScreen from '../screens/ReserveSuccessScreen'
 
 const Stack = createStackNavigator()
 
@@ -20,7 +19,6 @@ export default function ReservationsStack() {
             <Stack.Screen name='DetailsReservation' component={ViewReservationDetailsScreen} />
             <Stack.Screen name='Payment' component={PaymentScreen} />
             <Stack.Screen name='PaymentSuccess' component={PaymentSuccessScreen} />
-            <Stack.Screen name='ReserveSuccess' component={ReserveSuccessScreen} />
         </Stack.Navigator>
     )
 }

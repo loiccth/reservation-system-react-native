@@ -7,6 +7,8 @@ import ReservationScreen from '../screens/ReservationScreen'
 import ReservationPreviewScreen from '../screens/ReservationPreviewScreen'
 import PaymentScreen from '../screens/PaymentScreen'
 import PaymentSuccessScreen from '../screens/PaymentSuccessScreen'
+import ReserveSuccessScreen from '../screens/ReserveSuccessScreen'
+
 
 const Stack = createStackNavigator()
 
@@ -23,6 +25,7 @@ export default function SportsStack() {
             <Stack.Screen name='ReservationReview' component={ReservationPreviewScreen} />
             <Stack.Screen name='Payment' component={PaymentScreen} />
             <Stack.Screen name='PaymentSuccess' component={PaymentSuccessScreen} />
+            <Stack.Screen name='ReserveSuccess' component={ReserveSuccessScreen} />
         </Stack.Navigator>
     )
 }

@@ -34,7 +34,6 @@ const MembershipScreen = ({ navigation }) => {
                                     })
 
                                     // TODO: send post request for stripe
-                                    // TODO: for loop and check number of months
                                 }
                                 else {
                                     setMembership()

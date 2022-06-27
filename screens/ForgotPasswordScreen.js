@@ -31,7 +31,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             email: data.email
         })
             .then(() => {
-                axios.post('http://localhost:8080/api/v1/user/reset', { email: data.email })
+                axios.post('http://192.168.100.50:8080/api/v1/user/reset', { email: data.email })
                     .then(() => {
                         setData({
                             email: '',

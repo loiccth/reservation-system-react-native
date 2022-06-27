@@ -102,7 +102,7 @@ const ReservationScreen = ({ route, navigation }) => {
                     discount += childPrice
                 }
                 setDiscount(discount)
-                setPrice((adultPrice + childPrice) - discount)
+                setPrice((adultPrice + childPrice))
             }
             else {
                 setPrice(adultPrice + childPrice)

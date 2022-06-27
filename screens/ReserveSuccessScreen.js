@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput, Image, ScrollView } from 'react-native'
-import { getFirestore, collection, getDocs, query, where, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, query, where, doc, getDoc, updateDoc } from 'firebase/firestore'
 import illustration from '../assets/undraw_Booking_re_gw4j.png'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
@@ -20,7 +20,7 @@ const ReserveSuccessScreen = ({ route, navigation }) => {
                     date: new Date().toISOString()
                 },
                 user: user.email,
-                status: 'A',
+                status: 'Active',
                 complex
             })
             .then(result => {

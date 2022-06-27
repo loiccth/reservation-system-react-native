@@ -8,6 +8,8 @@ const ReservationPreviewScreen = ({ route, navigation }) => {
     const { complex, reservationDetails, price, discount } = route.params
     const db = getFirestore()
 
+    console.log(discount + ' reservation preview')
+
     const handleOnPress = () => {
         if (membership) {
             if (membership.type === 'VIP') {
@@ -49,7 +51,7 @@ const ReservationPreviewScreen = ({ route, navigation }) => {
                     <View style={{ flex: 1 }}>
                         <View style={{ alignSelf: 'center' }}><Text style={{ fontSize: 16, fontWeight: '700' }}>Value</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{complex.name}</Text></View>
-                        <View style={{ marginVertical: 10 }}><Text>{complex.location}</Text></View>
+                        <View style={{ marginVertical: 10 }}><Text>{complex.location.split(', ')[0]}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{new Date(reservationDetails.date).toLocaleDateString()}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.hourSlotDetail}</Text></View>
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.packageDetails.name}</Text></View>
@@ -59,11 +61,11 @@ const ReservationPreviewScreen = ({ route, navigation }) => {
                         <View style={{ marginVertical: 10 }}><Text>{reservationDetails.people.children}</Text></View>
                         {membership &&
                             <>
-                                <View style={{ marginVertical: 10 }}><Text >Rs {price + discount}</Text></View>
+                                <View style={{ marginVertical: 10 }}><Text >Rs {price}</Text></View>
                                 <View style={{ marginVertical: 10 }}><Text >Rs {discount}</Text></View>
                             </>
                         }
-                        <View style={{ marginVertical: 10 }}><Text>Rs {price}</Text></View>
+                        <View style={{ marginVertical: 10 }}><Text>Rs {price - discount}</Text></View>
                     </View>
                 </View>
 

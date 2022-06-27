@@ -23,6 +23,8 @@ const MFAScreen = ({ navigation }) => {
     }, [])
 
     const validateMFA = () => {
+        if (!code) return ToastAndroid.show('Code field is required.', ToastAndroid.SHORT)
+
         getDoc(doc(db, 'mfa', user.email))
             .then(res => {
                 if (res.exists()) {
@@ -43,7 +45,7 @@ const MFAScreen = ({ navigation }) => {
                         }
                         else {
                             setCode()
-                            ToastAndroid.show('MFA validation failed.', ToastAndroid.SHORT)
+                            ToastAndroid.show('MFA does not match.', ToastAndroid.SHORT)
                         }
                     }
                 }

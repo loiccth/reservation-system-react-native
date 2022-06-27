@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { doc, onSnapshot, getFirestore, collection, query, limit, orderBy, getDocs } from 'firebase/firestore'
 import axios from 'axios'
 import { LineChart, YAxis, XAxis, Grid } from 'react-native-svg-charts'
+import { UserContext } from '../contexts/UserContext'
 
 const ComplexDetailsScreen = ({ route, navigation }) => {
     const [mapModal, setMapModal] = React.useState(false)
@@ -16,6 +17,7 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
     const { complex } = route.params
     const db = getFirestore()
     const [modalVisible, setModalVisible] = React.useState(false)
+    const user = React.useContext(UserContext).user
 
     const closeMapModal = () => {
         setMapModal(false)
@@ -60,10 +62,9 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
             .catch(err => console.log(err))
     }, [])
 
-    const checkDisable = () => {
-        console.log(complex.status)
-        if (complex.status != 'A') {
-            ToastAndroid.show('This complex is not accepting reservation right now.', ToastAndroid.SHORT)
+    const checkVaccination = () => {
+        if (user.status != 'approved' && complex.vaccinationRequired) {
+            ToastAndroid.show('This complex requires vaccination.', ToastAndroid.SHORT)
         }
         else {
             navigation.navigate('Reservation', { complex })
@@ -82,9 +83,11 @@ const ComplexDetailsScreen = ({ route, navigation }) => {
                 <Image resizeMethod='resize' source={{ uri: complex.images[0] }} style={{ height: 250, width: '100%' }} />
 
                 <View style={styles.actions}>
-                    <TouchableOpacity style={styles.navigate} onPress={checkDisable}>
-                        <Text style={styles.buttonTxt}>Reserve Slot</Text>
-                    </TouchableOpacity>
+                    {complex.status != 'disable' &&
+                        <TouchableOpacity style={styles.navigate} onPress={checkVaccination}>
+                            <Text style={styles.buttonTxt}>Reserve Slot</Text>
+                        </TouchableOpacity>
+                    }
                     <TouchableOpacity style={styles.navigate} onPress={() => setMapModal(true)}>
                         <Ionicons name='navigate' size={20} style={{ color: '#00ADB5' }} />
                     </TouchableOpacity>

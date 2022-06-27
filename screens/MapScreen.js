@@ -29,7 +29,7 @@ const MapScreen = () => {
             })
         })()
 
-        const querySnapshot = await getDocs(query(collection(db, 'complexes'), where('status', '==', 'A')))
+        const querySnapshot = await getDocs(query(collection(db, 'complexes'), where('status', '==', 'Active')))
         querySnapshot.forEach((doc) => {
             // console.log(doc.id, " => ", doc.data())
             temp.push(doc.data())

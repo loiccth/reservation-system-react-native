@@ -16,8 +16,8 @@ let schema = yup.object().shape({
     adult3: yup.string().required('Adult 3 is required.'),
     des3: yup.string().required('Description 3 is required.'),
     name3: yup.string().required('Name 3 is required.'),
-    price2: yup.string().required('Kid 2 is required.'),
-    kid2: yup.string().required('Adult 2 is required.'),
+    kid2: yup.string().required('Kid 2 is required.'),
+    adult2: yup.string().required('Adult 2 is required.'),
     des2: yup.string().required('Description 2 is required.'),
     name2: yup.string().required('Name 2 is required.'),
     kid1: yup.string().required('Kid 1 is required.'),
@@ -117,9 +117,9 @@ const AddScreen = ({ navigation }) => {
             name1: packages[0].name,
             capacity: data.capacity,
             depth: data.depth,
-            tags: data.tags.split(', '),
-            activities: data.activities.split(', '),
-            facilities: data.facilities.split(', '),
+            tags: data.tags,
+            activities: data.activities,
+            facilities: data.facilities,
             description: data.description,
             category: data.category,
             location: data.location,
@@ -137,12 +137,12 @@ const AddScreen = ({ navigation }) => {
                     coordinate: data.coordinate,
                     capacity: data.capacity,
                     depth: data.depth,
-                    tags: data.tags,
-                    activities: data.activities,
-                    facilities: data.facilities,
+                    tags: data.tags.split(', '),
+                    activities: data.activities.split(', '),
+                    facilities: data.facilities.split(', '),
                     vaccinationRequired: vaccine,
                     packages,
-                    status: 'A'
+                    status: 'enable'
                 }).then((docRef) => {
                     // console.log(docRef.id)
                     ToastAndroid.show('Pool successfully added.', ToastAndroid.SHORT)
@@ -371,7 +371,7 @@ const AddScreen = ({ navigation }) => {
                         <TextInput style={styles.inputText}
                             placeholderTextColor='#c4cfce'
                             selectionColor={'#919191'}
-                            value={data.tags}
+                            value={data.depth}
                             keyboardType='numeric'
                             onChangeText={text => setData({ ...data, depth: text })}
                         />
@@ -383,7 +383,7 @@ const AddScreen = ({ navigation }) => {
                         <TextInput style={styles.inputText}
                             placeholderTextColor='#c4cfce'
                             selectionColor={'#919191'}
-                            value={data.tags}
+                            value={data.capacity}
                             keyboardType='numeric'
                             onChangeText={text => setData({ ...data, capacity: text })}
                         />
