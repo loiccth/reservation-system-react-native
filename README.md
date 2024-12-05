@@ -16,3 +16,10 @@ This project aims to provide a cross-platform mobile application to facilitate t
 - **Algolia** for fast and effective search functionality.
 - **Axios** for making HTTP requests.
 - **React Navigation** for managing the app's navigation and routing.
+
+
+# Enhancements:
+- Use TypeScript instead of plain JavaScript to detect type-related errors at compile time.
+- Reduce data drilling in React to prevent unnecessary re-renders and remove tightly coupled components.
+- Reduce the amount of **useEffect** hook to increase maintainability and readability.
+- Remove dependency on **Axios** and use integrated **fetch** function instead.
